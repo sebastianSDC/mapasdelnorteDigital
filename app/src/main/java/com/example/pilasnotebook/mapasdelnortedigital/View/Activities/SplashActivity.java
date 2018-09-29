@@ -19,8 +19,7 @@ public class SplashActivity extends AppCompatActivity {
         h.postDelayed(new Runnable() {
             @Override
             public void run() {
-                //Intent intent = new Intent(SplashActivity.this, Home.class);
-                //Intent intent = new Intent(SplashActivity.this, DetalleNoticiaActivity.class);
+
                 Intent intent = new Intent(SplashActivity.this,HomeActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
