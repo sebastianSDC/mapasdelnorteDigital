@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">MAPASDELNORTE</string>
+
+    <string name="COUPON_STRIP">CUPONERA</string>
+    <string name="BILLBOARD">CARTELERA</string>
+    <string name="SHOPS">COMERCIOS</string>
+    <string name="RESERVATIONS">RESERVAS</string>
+    <string name="DELIVERY">DELIVERY</string>
+    <string name="ACTIVITY_IN_APP">ACTIVITY \n
+        IN APP</string>
+
+
+</resources>
+
+
+
+

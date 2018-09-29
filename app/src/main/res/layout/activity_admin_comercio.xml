@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".View.Activities.AdminComercioActivity">
+
+    <TextView
+        android:id="@+id/Admin_comercio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Admin Comercio"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:textSize="20sp"
+        android:textColor="@color/colorNegro"
+        android:textStyle="bold"
+        android:fontFamily="@font/montserrat_bold"/>
+
+    <TextView
+        android:id="@+id/Nombre_Comercio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="40dp"
+        android:layout_weight="1"
+        android:text="Nombre"
+        android:fontFamily="@font/montserrat"
+        android:textColor="@color/colorNegro"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/inNombre_Comercio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="70dp"
+        android:background="@drawable/edit_text_borde"
+        android:padding="3dp"
+        android:text="La Praderita"
+        android:fontFamily="@font/montserrat"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/direccion_Comercio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="109dp"
+        android:text="Direccion"
+        android:fontFamily="@font/montserrat"
+        android:textColor="@color/colorNegro"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+    >
+
+    <EditText
+        android:id="@+id/inDireccion_Comercio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="135dp"
+        android:background="@drawable/edit_text_borde"
+        android:padding="3dp"
+        android:text="Avda Las Casas 725"
+        android:fontFamily="@font/montserrat"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/telefono_Comercio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="172dp"
+        android:text="Telefono"
+        android:fontFamily="@font/montserrat"
+        android:textColor="@color/colorNegro"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+    >
+
+    <EditText
+        android:id="@+id/inTelefono_Comercio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="200dp"
+        android:background="@drawable/edit_text_borde"
+        android:padding="3dp"
+        android:text="+5491137261548"
+        android:fontFamily="@font/montserrat"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/mail_Comercio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="244dp"
+        android:fontFamily="@font/montserrat"
+        android:text="Mail"
+        android:textColor="@color/colorNegro"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+    >
+
+    <EditText
+        android:id="@+id/inMail_Comercio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/edit_text_borde"
+        android:fontFamily="@font/montserrat"
+        android:padding="3dp"
+        android:text="lapraderira@gmail.com"
+        android:textSize="14sp" />
+
+
+
+</RelativeLayout>
