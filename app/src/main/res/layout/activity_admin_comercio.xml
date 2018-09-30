@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginHorizontal="20dp"
     tools:context=".View.Activities.AdminComercioActivity">
 
     <TextView
@@ -23,8 +24,8 @@
         android:id="@+id/Nombre_Comercio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/Admin_comercio"
         android:layout_weight="1"
         android:text="Nombre"
         android:fontFamily="@font/montserrat"
@@ -34,14 +35,15 @@
 
     <EditText
         android:id="@+id/inNombre_Comercio"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="70dp"
+        android:layout_below="@id/Nombre_Comercio"
         android:background="@drawable/edit_text_borde"
-        android:padding="3dp"
-        android:text="La Praderita"
+        android:padding="10dp"
+        android:layout_marginBottom="10dp"
+        android:text=""
+        android:hint="escriba el nombre de su comercio o servicio"
         android:fontFamily="@font/montserrat"
         android:textSize="14sp" />
 
@@ -61,14 +63,15 @@
 
     <EditText
         android:id="@+id/inDireccion_Comercio"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="135dp"
         android:background="@drawable/edit_text_borde"
-        android:padding="3dp"
-        android:text="Avda Las Casas 725"
+        android:layout_below="@id/direccion_Comercio"
+        android:padding="10dp"
+        android:layout_marginBottom="10dp"
+        android:text=""
+        android:hint="escriba direccion actual"
         android:fontFamily="@font/montserrat"
         android:textSize="14sp" />
 
@@ -77,8 +80,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="172dp"
+        android:layout_below="@id/inDireccion_Comercio"
         android:text="Telefono"
         android:fontFamily="@font/montserrat"
         android:textColor="@color/colorNegro"
@@ -88,14 +90,15 @@
 
     <EditText
         android:id="@+id/inTelefono_Comercio"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="200dp"
         android:background="@drawable/edit_text_borde"
-        android:padding="3dp"
-        android:text="+5491137261548"
+        android:layout_below="@id/telefono_Comercio"
+        android:padding="10dp"
+        android:layout_marginBottom="10dp"
+        android:text=""
+        android:hint="escriba un numero con codigo de area "
         android:fontFamily="@font/montserrat"
         android:textSize="14sp" />
 
@@ -104,8 +107,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="244dp"
+      android:layout_below="@id/inTelefono_Comercio"
         android:fontFamily="@font/montserrat"
         android:text="Mail"
         android:textColor="@color/colorNegro"
@@ -115,16 +117,49 @@
 
     <EditText
         android:id="@+id/inMail_Comercio"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:background="@drawable/edit_text_borde"
         android:fontFamily="@font/montserrat"
-        android:padding="3dp"
-        android:text="lapraderira@gmail.com"
+        android:layout_below="@id/mail_Comercio"
+        android:padding="10dp"
+        android:layout_marginBottom="10dp"
+        android:text=""
+        android:hint="escriba un mail valido"
         android:textSize="14sp" />
 
+    <Button
+        android:id="@+id/btn_cargar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="cargar"
+        android:layout_below="@id/inMail_Comercio"
+        />
+
+    <Button
+        android:id="@+id/btn_traer_datos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="traer datos"
+        android:backgroundTint="@color/colorPrimary"
+        android:layout_below="@id/btn_cargar"
+        android:layout_marginBottom="50dp"
+        />
+
+    <TextView
+        android:id="@+id/datos_Cliente"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/btn_traer_datos"
+        android:fontFamily="@font/montserrat_bold"
+        android:text=" texto"
+        android:textAlignment="center"
+        android:textColor="@color/colorNegro"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
 
 </RelativeLayout>
