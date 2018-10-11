@@ -4,7 +4,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.example.pilasnotebook.mapasdelnortedigital"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -28,7 +28,16 @@ dependencies {
 
     implementation 'com.android.support:design:27.1.1'
 
-    implementation 'com.google.firebase:firebase-core:16.0.3'
-    implementation'com.google.firebase:firebase-firestore:17.1.0'
+    implementation 'com.google.firebase:firebase-core:16.0.4'
+
+    implementation'com.google.firebase:firebase-firestore:17.1.1'
+    implementation'com.google.firebase:firebase-auth:16.0.4'
+    implementation'com.google.firebase:firebase-storage:16.0.3'
+
+    implementation 'com.firebaseui:firebase-ui-auth:4.2.0'
+    implementation 'com.firebaseui:firebase-ui-firestore:4.2.0'
+    implementation 'com.firebaseui:firebase-ui-storage:4.2.0'
+
+
 }
 apply plugin: 'com.google.gms.google-services'
