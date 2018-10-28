@@ -5,7 +5,6 @@
     <color name="colorAccent">#d0f28c</color>
     <color name="colorBlanco">#ffffff</color>
     <color name="colorNegro">#000000</color>
-    <color name="colorBotonClickeado">#a8fc01</color>
-    <color name="colorGris">#dadad9</color>
+    <color name="colorCardCliente">#fffac0</color>
 
 </resources>

@@ -1,37 +1,49 @@
-package com.example.pilasnotebook.mapasdelnortedigital.Model.POJO;
+package com.example.pilasnotebook.mapasdelnortedigital.model.POJO;
 
 
+import java.util.List;
 
 public class Cliente {
 
 
+    private int categoria;
+    private String nombreComercio;
+    private Zona zona;
+    private String telefono;
+    private String mail;
+    private String horarioDeAtencion, paginaWeb;
+    private List<String> redes;
 
-    private String nombre, direccion, telefono, mail;
+    private String direccion;
+
 
     public Cliente() {
+
     }
 
-    public Cliente(String nombre, String direccion, String telefono, String mail) {
-        this.nombre = nombre;
+    public Cliente(String nombre, int categoria, String direccion) {
+        this.nombreComercio = nombre;
+        this.categoria = categoria;
         this.direccion = direccion;
-        this.telefono = telefono;
-        this.mail = mail;
+
+
+
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getNombreComercio() {
+        return nombreComercio;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setNombreComercio(String nombre) {
+        this.nombreComercio = nombre;
     }
 
-    public String getDireccion() {
-        return direccion;
+    public Zona getZona() {
+        return zona;
     }
 
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
+    public void setZona(Zona zona) {
+        this.zona = zona;
     }
 
     public String getTelefono() {
@@ -50,9 +62,35 @@ public class Cliente {
         this.mail = mail;
     }
 
+    public String getHorarioDeAtencion() {
+        return horarioDeAtencion;
+    }
 
-    /*@Override
-    public String toString() {
-        return ("nombre:" + getNombre() + "direccion:" + getDireccion() + "telefono:" + getTelefono() + "mail:" + getMail());
-    }*/
+    public void setHorarioDeAtencion(String horarioDeAtencion) {
+        this.horarioDeAtencion = horarioDeAtencion;
+    }
+
+    public String getPaginaWeb() {
+        return paginaWeb;
+    }
+
+    public void setPaginaWeb(String paginaWeb) {
+        this.paginaWeb = paginaWeb;
+    }
+
+    public List<String> getRedes() {
+        return redes;
+    }
+
+    public void setRedes(List<String> redes) {
+        this.redes = redes;
+    }
+
+    public int getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(int categoria) {
+        this.categoria = categoria;
+    }
 }

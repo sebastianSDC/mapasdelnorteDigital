@@ -1,31 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".View.Activities.SplashActivity">
-
+    tools:context=".view.activity.SplashActivity">
     <ImageView
         android:id="@+id/isologo_mapasdelnorte"
-        android:layout_width="320dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="202dp"
-
+        android:layout_marginStart="43dp"
+        android:layout_marginLeft="43dp"
+        android:layout_marginTop="198dp"
         android:foregroundGravity="bottom"
-
-        android:scaleType="fitCenter"
-        android:src="@drawable/isologotipo_mapasdelnorte" />
-
-    <!--<ImageView
-        android:id="@+id/logo"
-        android:layout_width="122dp"
-        android:layout_height="122dp"
-        android:src="@drawable/isotipo_marker_mapasdelnorte"
-        android:layout_above="@+id/isologo_mapasdelnorte"
-        android:layout_centerInParent="true"/>
--->
+        android:scaleType="center"
+        android:src="@drawable/isologotipo_ok" />
 </RelativeLayout>
 

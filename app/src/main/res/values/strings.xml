@@ -1,13 +1,38 @@
 <resources>
+
+
     <string name="app_name">MAPASDELNORTE</string>
+
 
     <string name="COUPON_STRIP">CUPONERA</string>
     <string name="BILLBOARD">CARTELERA</string>
     <string name="SHOPS">COMERCIOS</string>
     <string name="RESERVATIONS">RESERVAS</string>
     <string name="DELIVERY">DELIVERY</string>
-    <string name="ACTIVITY_IN_APP">ACTIVITY \n
-        IN APP</string>
+    <string name="ACTIVITY_IN_APP">ACTIVITY</string>
+
+
+    <string name="Direccion">Direccion</string>
+    <string name="Categoria">Categoria</string>
+
+
+    <string name="nombre">Nombre</string>
+    <string name="admin_comercio">Admin Comercio</string>
+    <string name="hint_nombre">escriba el nombre de su comercio o servicio</string>
+    <string name="hint_direccion">escriba direccion actual</string>
+    <string name="telefono">Telefono</string>
+    <string name="hint_tel">escriba un numero con codigo de area</string>
+    <string name="hint_categoria">seleccione la categoria</string>
+    <string name="datos_de_zona">Datos de Zona</string>
+    <string name="datos_de_contacto">Datos de Contacto</string>
+    <string name="localidad">Localidad</string>
+    <string name="hint_localidad">escriba la localidad o barrio del comercio</string>
+    <string name="cod_postal">Cod. Postal</string>
+    <string name="hint_cp">escriba el CP.</string>
+    <string name="provincia">Provincia</string>
+    <string name="mail">Mail</string>
+    <string name="hint_mail">escriba un mail de uso comercial</string>
+
 
 
 </resources>
