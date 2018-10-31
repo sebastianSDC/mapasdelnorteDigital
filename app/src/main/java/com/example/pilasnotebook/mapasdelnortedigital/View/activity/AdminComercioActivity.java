@@ -2,7 +2,9 @@ package com.example.pilasnotebook.mapasdelnortedigital.view.activity;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -14,10 +16,14 @@ import android.widget.TextView;
 import com.example.pilasnotebook.mapasdelnortedigital.R;
 import com.example.pilasnotebook.mapasdelnortedigital.model.POJO.Cliente;
 import com.example.pilasnotebook.mapasdelnortedigital.model.POJO.Zona;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +35,7 @@ public class AdminComercioActivity extends AppCompatActivity {
     private static final String DIRECCION = "direccion";
     private static final String TELEFONO = "telefono";
     private static final String CATEGORIA = "categoria";
+    private static final String TAG = "tag";
     private String categoriaTxt;
 
     private Zona zona;
@@ -36,8 +43,8 @@ public class AdminComercioActivity extends AppCompatActivity {
     private TextView datosTraidos;
     private EditText nombreEd, direccionEd, telefonoEd;
     private Button btncargar, btntraer;
-    private FirebaseFirestore db;
-    private DocumentReference dbref = db.getInstance().document("clientes/datos");
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
     protected Spinner categorias;
 
 
@@ -63,7 +70,7 @@ public class AdminComercioActivity extends AppCompatActivity {
         categorias.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-               categoriaTxt = parent.getItemAtPosition(position).toString();
+                categoriaTxt = parent.getItemAtPosition(position).toString();
             }
 
             @Override
@@ -95,7 +102,19 @@ public class AdminComercioActivity extends AppCompatActivity {
                 datosACargar.put(DIRECCION, direccionTxt);
                 datosACargar.put(TELEFONO, telefonoTxt);
                 datosACargar.put(CATEGORIA, categoriaTxt);
-                dbref.set(datosACargar);
+                db.collection("clientes").add(datosACargar).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                    }
+                })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w(TAG, "Error adding document", e);
+                            }
+                        });
+
             }
         });
 
@@ -104,26 +123,31 @@ public class AdminComercioActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                dbref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-
-
+                db.collection("clientes").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.exists()) {
-                            String nombreTxt = documentSnapshot.getString(NOMBRE);
-                            String direccionTxt = documentSnapshot.getString(DIRECCION);
-                            String telefonoTxt = documentSnapshot.getString(TELEFONO);
-                            String categoriaTxt = documentSnapshot.getString(CATEGORIA);
-                            datosTraidos.setText("BIENVENIDO :    " + nombreTxt +
-                                    "   //    " + direccionTxt +
-                                    "   //      " + telefonoTxt +
-                                    "   categoria:   " + categoriaTxt);
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                String nombreTxt = document.getString(NOMBRE);
+                                String direccionTxt = document.getString(DIRECCION);
+                                String telefonoTxt = document.getString(TELEFONO);
+                                String categoriaTxt = document.getString(CATEGORIA);
+                                datosTraidos.setText("BIENVENIDO : " + nombreTxt +
+                                        "\n" + direccionTxt +
+                                        "   \n     " + telefonoTxt +
+                                        "   \n   " + categoriaTxt);
+
+                            }
+                        } else {
+                            Log.w(TAG, "Error getting documents.", task.getException());
                         }
                     }
-
-
                 });
+
             }
+
+
         });
     }
 
@@ -134,3 +158,4 @@ public class AdminComercioActivity extends AppCompatActivity {
     }
 
 }
+

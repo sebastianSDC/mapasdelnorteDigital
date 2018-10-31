@@ -25,6 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 
 public class DatosClienteFragment extends Fragment  {
@@ -71,7 +72,7 @@ public class DatosClienteFragment extends Fragment  {
         btncargar = (Button) view.findViewById(R.id.btn_cargar);
         btntraer = (Button) view.findViewById(R.id.btn_traer_datos);
 
-        ArrayAdapter<CharSequence> adapterSpinCAtegorias = ArrayAdapter.createFromResource(getActivity(),
+        ArrayAdapter<CharSequence> adapterSpinCAtegorias = ArrayAdapter.createFromResource(Objects.requireNonNull(getActivity()),
                 R.array.combo_categorias, android.R.layout.simple_spinner_item);
 
         categorias.setAdapter(adapterSpinCAtegorias);
@@ -79,7 +80,7 @@ public class DatosClienteFragment extends Fragment  {
         categorias.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                categoriaTxt = categoriaTxt.parseInt(parent.getItemAtPosition(position).toString());
+                categoriaTxt = Integer.parseInt(parent.getItemAtPosition(position).toString());
             }
 
             @Override
@@ -106,25 +107,7 @@ public class DatosClienteFragment extends Fragment  {
             @Override
             public void onClick(View v) {
 
-                dbref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-
-
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.exists()) {
-                            String nombreTxt = documentSnapshot.getString(NOMBRE);
-                            String direccionTxt = documentSnapshot.getString(DIRECCION);
-                            String telefonoTxt = documentSnapshot.getString(TELEFONO);
-                            String categoriaTxt = documentSnapshot.getString(CATEGORIA);
-                            datosTraidos.setText("BIENVENIDO :    " + nombreTxt +
-                                    "   //    " + direccionTxt +
-                                    "   //      " + telefonoTxt +
-                                    "   categoria:   " + categoriaTxt);
-                        }
-                    }
-
-
-                });
+                traerDatosClientes();
             }
         });
 
@@ -165,5 +148,27 @@ public class DatosClienteFragment extends Fragment  {
 
     }
 
+    public void traerDatosClientes(){
+
+        dbref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+
+
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+                    String nombreTxt = documentSnapshot.getString(NOMBRE);
+                    String direccionTxt = documentSnapshot.getString(DIRECCION);
+                    String telefonoTxt = documentSnapshot.getString(TELEFONO);
+                    String categoriaTxt = documentSnapshot.getString(CATEGORIA);
+                    datosTraidos.setText("BIENVENIDO :    " + nombreTxt +
+                            "   //    " + direccionTxt +
+                            "   //      " + telefonoTxt +
+                            "   categoria:   " + categoriaTxt);
+                }
+            }
+
+
+        });
+    }
 
 }
