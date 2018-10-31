@@ -1,14 +1,18 @@
 package com.example.pilasnotebook.mapasdelnortedigital.view.activity;
 
+
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.pilasnotebook.mapasdelnortedigital.model.POJO.Cliente;
 import com.example.pilasnotebook.mapasdelnortedigital.R;
+import com.example.pilasnotebook.mapasdelnortedigital.model.POJO.Cliente;
 import com.example.pilasnotebook.mapasdelnortedigital.model.POJO.Zona;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
@@ -25,14 +29,16 @@ public class AdminComercioActivity extends AppCompatActivity {
     private static final String DIRECCION = "direccion";
     private static final String TELEFONO = "telefono";
     private static final String CATEGORIA = "categoria";
+    private String categoriaTxt;
 
     private Zona zona;
-
+    private Cliente cliente;
     private TextView datosTraidos;
-    private EditText nombreEd, direccionEd, telefonoEd, categoriaEd;
+    private EditText nombreEd, direccionEd, telefonoEd;
     private Button btncargar, btntraer;
     private FirebaseFirestore db;
     private DocumentReference dbref = db.getInstance().document("clientes/datos");
+    protected Spinner categorias;
 
 
     @Override
@@ -43,12 +49,28 @@ public class AdminComercioActivity extends AppCompatActivity {
         nombreEd = (EditText) findViewById(R.id.inNombre_Comercio);
         direccionEd = (EditText) findViewById(R.id.inDireccion_Comercio);
         telefonoEd = (EditText) findViewById(R.id.inTelefono_Comercio);
-        categoriaEd = (EditText) findViewById(R.id.inCategoria_Comercio);
+        categorias = (Spinner) findViewById(R.id.spinn_categoria_Comercio);
         datosTraidos = (TextView) findViewById(R.id.datos_Cliente);
         btncargar = (Button) findViewById(R.id.btn_cargar);
         btntraer = (Button) findViewById(R.id.btn_traer_datos);
 
 
+        ArrayAdapter<CharSequence> adapterSpinCAtegorias = ArrayAdapter.createFromResource(this,
+                R.array.combo_categorias, android.R.layout.simple_spinner_item);
+
+        categorias.setAdapter(adapterSpinCAtegorias);
+
+        categorias.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+               categoriaTxt = parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         btncargar.setOnClickListener(new View.OnClickListener() {
 
@@ -56,14 +78,12 @@ public class AdminComercioActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 
-
                 String nombreTxt = nombreEd.getText().toString().trim();
                 String direccionTxt = direccionEd.getText().toString().trim();
                 String telefonoTxt = telefonoEd.getText().toString().trim();
-                String categoriaTxt = categoriaEd.getText().toString();
 
 
-
+                cliente = new Cliente();
 
 
                 if (nombreTxt.isEmpty() || direccionTxt.isEmpty() || telefonoTxt.isEmpty() || categoriaTxt.isEmpty()) {
@@ -74,7 +94,7 @@ public class AdminComercioActivity extends AppCompatActivity {
                 datosACargar.put(NOMBRE, nombreTxt);
                 datosACargar.put(DIRECCION, direccionTxt);
                 datosACargar.put(TELEFONO, telefonoTxt);
-                datosACargar.put(CATEGORIA.toString(), categoriaTxt);
+                datosACargar.put(CATEGORIA, categoriaTxt);
                 dbref.set(datosACargar);
             }
         });
@@ -94,9 +114,9 @@ public class AdminComercioActivity extends AppCompatActivity {
                             String direccionTxt = documentSnapshot.getString(DIRECCION);
                             String telefonoTxt = documentSnapshot.getString(TELEFONO);
                             String categoriaTxt = documentSnapshot.getString(CATEGORIA);
-                            datosTraidos.setText("BIENVENIDO     " + "   nombre:   " + nombreTxt +
-                                    "   direccion:    " + direccionTxt +
-                                    "   telefono:      " + telefonoTxt +
+                            datosTraidos.setText("BIENVENIDO :    " + nombreTxt +
+                                    "   //    " + direccionTxt +
+                                    "   //      " + telefonoTxt +
                                     "   categoria:   " + categoriaTxt);
                         }
                     }

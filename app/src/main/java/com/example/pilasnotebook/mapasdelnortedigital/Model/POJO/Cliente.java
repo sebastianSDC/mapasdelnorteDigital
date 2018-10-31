@@ -1,9 +1,10 @@
 package com.example.pilasnotebook.mapasdelnortedigital.model.POJO;
 
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Cliente {
+public class Cliente implements Serializable {
 
 
     private int categoria;
