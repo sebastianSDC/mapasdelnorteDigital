@@ -3,6 +3,7 @@
     package="com.example.pilasnotebook.mapasdelnortedigital">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -19,11 +20,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".view.activity.HomeActivity" />
-        <activity android:name=".view.activity.AdminComercioActivity" />
         <activity
             android:name=".view.activity.ViewPagerAdminActivity"
             android:label="@string/title_activity_view_pager_admin"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

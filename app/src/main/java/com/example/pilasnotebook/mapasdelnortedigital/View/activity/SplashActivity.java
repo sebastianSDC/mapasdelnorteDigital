@@ -20,11 +20,11 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void run() {
 
-                Intent intent = new Intent(SplashActivity.this,AdminComercioActivity.class);
+                Intent intent = new Intent(SplashActivity.this,ViewPagerAdminActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }
-        }, 5000);
+        }, 3000);
 
     }
 }

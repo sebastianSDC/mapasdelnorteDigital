@@ -1,37 +1,42 @@
 package com.example.pilasnotebook.mapasdelnortedigital.view.activity;
 
-        import android.support.design.widget.TabLayout;
-        import android.support.design.widget.FloatingActionButton;
-        import android.support.design.widget.Snackbar;
-        import android.support.v7.app.AppCompatActivity;
-        import android.support.v7.widget.Toolbar;
 
-        import android.support.v4.app.Fragment;
-        import android.support.v4.app.FragmentManager;
-        import android.support.v4.app.FragmentPagerAdapter;
-        import android.support.v4.view.ViewPager;
-        import android.os.Bundle;
-        import android.view.LayoutInflater;
-        import android.view.Menu;
-        import android.view.MenuItem;
-        import android.view.View;
-        import android.view.ViewGroup;
+/**
+ * Creada por Sebastián Suárez Da Costa y Pablo Herrera.
+ */
 
-        import android.widget.TextView;
 
-        import com.example.pilasnotebook.mapasdelnortedigital.R;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 
-public class ViewPagerAdminActivity extends AppCompatActivity {
+import com.example.pilasnotebook.mapasdelnortedigital.R;
+import com.example.pilasnotebook.mapasdelnortedigital.view.fragment.CarteleraClienteFragment;
+import com.example.pilasnotebook.mapasdelnortedigital.view.fragment.CatalogoOnLineClienteFragment;
+import com.example.pilasnotebook.mapasdelnortedigital.view.fragment.CuponeraClienteFragment;
+import com.example.pilasnotebook.mapasdelnortedigital.view.fragment.DatosClienteFragment;
+import com.example.pilasnotebook.mapasdelnortedigital.view.fragment.FotosClienteFragment;
+import com.example.pilasnotebook.mapasdelnortedigital.view.fragment.MapaClienteFragment;
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
-    private SectionsPagerAdapter mSectionsPagerAdapter;
+
+public class ViewPagerAdminActivity extends AppCompatActivity implements CarteleraClienteFragment.OnFragmentInteractionListener,CuponeraClienteFragment.OnFragmentInteractionListener,MapaClienteFragment.OnFragmentInteractionListener,FotosClienteFragment.OnFragmentInteractionListener,DatosClienteFragment.OnFragmentInteractionListener,CatalogoOnLineClienteFragment.OnFragmentInteractionListener {
+
+    private PlaceholderFragment.SectionsPagerAdapter mSectionsPagerAdapter;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -47,7 +52,7 @@ public class ViewPagerAdminActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mSectionsPagerAdapter = new PlaceholderFragment.SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
@@ -92,6 +97,11 @@ public class ViewPagerAdminActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+
     /**
      * A placeholder fragment containing a simple view.
      */
@@ -109,45 +119,83 @@ public class ViewPagerAdminActivity extends AppCompatActivity {
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
+        public static Fragment newInstance(int sectionNumber) {
+            Fragment fragment = null;
+
+            switch (sectionNumber) {
+
+                case 1:
+                    fragment = new DatosClienteFragment();
+                    break;
+                case 2:
+                    fragment = new MapaClienteFragment();
+                    break;
+                case 3:
+                    fragment = new CuponeraClienteFragment();
+                    break;
+                case 4:
+                    fragment = new CarteleraClienteFragment();
+                    break;
+                case 5:
+                    fragment = new FotosClienteFragment();
+                    break;
+                case 6:
+                    fragment = new CatalogoOnLineClienteFragment();
+                    break;
+
+
+            }
             return fragment;
         }
 
+        @Nullable
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_datos, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
+        public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+             super.onCreateView(inflater, container, savedInstanceState);
+            View view =inflater.inflate(R.layout.activity_view_pager_admin, container, false);
 
-            return rootView;
+            return view;
+        }
+
+
+        public static class SectionsPagerAdapter extends FragmentPagerAdapter {
+            public SectionsPagerAdapter(FragmentManager fm) {
+                super(fm);
+            }
+
+            @Override
+            public Fragment getItem(int position) {
+                return PlaceholderFragment.newInstance(position + 1);
+
+            }
+
+            @Override
+            public int getCount() {
+                return 6;
+            }
+
+
+            @Override
+            public CharSequence getPageTitle(int position) {
+                switch (position) {
+                    case 0:
+                        return "Datos";
+                    case 1:
+                        return "Mapa";
+                    case 2:
+                        return "Cuponera";
+                    case 3:
+                        return "Cartelera";
+                    case 4:
+                        return "Fotos";
+                    case 5:
+                        return "Catalogo On-Line";
+                }
+                return null;
+            }
+
+
         }
     }
 
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
-        }
-
-        @Override
-        public int getCount() {
-            // Show 3 total pages.
-            return 6;
-        }
-    }
 }

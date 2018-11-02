@@ -19,14 +19,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.pilasnotebook.mapasdelnortedigital.R;
-import com.example.pilasnotebook.mapasdelnortedigital.model.POJO.Cliente;
-import com.example.pilasnotebook.mapasdelnortedigital.model.POJO.Zona;
 import com.example.pilasnotebook.mapasdelnortedigital.utils.Constantes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -41,67 +37,55 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class DatosClienteFragment extends Fragment {
+public class CuponeraClienteFragment extends Fragment {
 
-    private OnFragmentInteractionListener mListener; // interface
+    private OnFragmentInteractionListener mListener;
 
-    String TAG = Constantes.TAG;
 
-    private String categoriaTxt;
+    private static final String TAG = "tag";
 
-    private Zona zona;
-    private Cliente cliente;
-    private TextView datosTraidos;
-    private EditText nombreEd, descripcionEd, direccionEd, localidadED, codigoPostalEd, provinciaEd, paisEd, telefonoEd, mailEd;
-    private ImageView fotodeContacto;
-    private Button btnCargarFoto, btnCargar, btnTraer;
+    private EditText tituloEd, descripcionEd, direccionEd, telefonoEd, mailEd;
+    private Spinner tipos;
+
+    private Button btnCargar, btnTraer;
+    private TextView datosCuponera;
+    private String tipoCuponera;
+
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    //String documentId= db.collection("clientes").document().getId();
-    protected Spinner categorias;
+    String documentId= db.collection("clientes").document().getId();
 
 
-    public DatosClienteFragment() {
+    public CuponeraClienteFragment() {
         // Required empty public constructor
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_datos, container, false);
+        View view = inflater.inflate(R.layout.fragment_cuponera, container, false);
 
-        nombreEd = (EditText) view.findViewById(R.id.ed_nombre_comercio);
-        descripcionEd = (EditText) view.findViewById(R.id.ed_descripcion_comercio);
-        categorias = (Spinner) view.findViewById(R.id.spinn_categorias_comercio);
-        btnCargarFoto = (Button)view.findViewById(R.id.btn_cargarFoto_comercio);
-        fotodeContacto = (ImageView) view.findViewById(R.id.imagen_contacto_comercio);
-        direccionEd = (EditText) view.findViewById(R.id.ed_direccion_comercio);
-        localidadED = (EditText) view.findViewById(R.id.ed_localidad_comercio);
-        codigoPostalEd = (EditText) view.findViewById(R.id.ed_codigoPostal_comercio);
-        provinciaEd = (EditText) view.findViewById(R.id.ed_provincia_comercio);
-        paisEd = (EditText) view.findViewById(R.id.ed_pais_comercio);
-        telefonoEd = (EditText) view.findViewById(R.id.ed_telefono_comercio);
-        mailEd = (EditText) view.findViewById(R.id.ed_mail_comercio);
+        tituloEd = view.findViewById(R.id.ed_titulo_cuponera);
+        descripcionEd = view.findViewById(R.id.ed_descripcion_cuponera);
+        direccionEd = view.findViewById(R.id.inDireccion_Comercio);
+        telefonoEd = view.findViewById(R.id.inTelefono_Comercio);
+        mailEd = view.findViewById(R.id.inMail_Comercio);
+        tipos = view.findViewById(R.id.spinn_tipo_cuponera);
 
-        datosTraidos = (TextView) view.findViewById(R.id.datos_comercio);
-        btnCargar = (Button) view.findViewById(R.id.btn_cargar_datos_comercio);
-        btnTraer = (Button) view.findViewById(R.id.btn_traer_datos_comercio);
+        datosCuponera = view.findViewById(R.id.datos_cuponera);
+        btnCargar = view.findViewById(R.id.btn_cargar_cuponera);
+        btnTraer = view.findViewById(R.id.btn_traer_datos_cuponera);
 
-        //logica del spinner
         ArrayAdapter<CharSequence> adapterSpinCAtegorias = ArrayAdapter.createFromResource(getActivity(),
-                R.array.combo_categorias, android.R.layout.simple_spinner_item);
+                R.array.combo_tipos_cuponera, android.R.layout.simple_spinner_item);
 
-        categorias.setAdapter(adapterSpinCAtegorias);
+        tipos.setAdapter(adapterSpinCAtegorias);
 
-        categorias.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        tipos.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                categoriaTxt = parent.getItemAtPosition(position).toString();
+                tipoCuponera = parent.getItemAtPosition(position).toString();
             }
 
             @Override
@@ -115,32 +99,29 @@ public class DatosClienteFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-
-                String nombreTxt = nombreEd.getText().toString().trim();
+                String tituloTxt = tituloEd.getText().toString().trim();
+                String descripcionTxt = descripcionEd.getText().toString().trim();
+                String mailTxt = mailEd.getText().toString().trim();
                 String direccionTxt = direccionEd.getText().toString().trim();
                 String telefonoTxt = telefonoEd.getText().toString().trim();
 
-
-                cliente = new Cliente();
-
-                if (nombreTxt.isEmpty() || direccionTxt.isEmpty() || telefonoTxt.isEmpty() || categoriaTxt.isEmpty()) {
-
-                    Toast.makeText(getActivity(), "debe completar los campos obligatorios", Toast.LENGTH_LONG).show();
-
-                    return ;
+                if (tituloTxt.isEmpty() || direccionTxt.isEmpty() || telefonoTxt.isEmpty() || tipoCuponera.isEmpty()) {
+                    return;
                 }
 
                 Map<String, Object> datosACargar = new HashMap<String, Object>();
-                datosACargar.put(Constantes.NOMBRE, nombreTxt);
+                datosACargar.put(Constantes.TIPO, tipoCuponera);
+                datosACargar.put(Constantes.TITULO, tituloTxt);
+                datosACargar.put(Constantes.DESCRIPCION, descripcionTxt);
                 datosACargar.put(Constantes.DIRECCION, direccionTxt);
                 datosACargar.put(Constantes.TELEFONO, telefonoTxt);
-                datosACargar.put(Constantes.CATEGORIA, categoriaTxt);
+                datosACargar.put(Constantes.MAIL, mailTxt);
 
 
                 //esta instruccion es para poner un cliente con sub-coleccion cuponera...
                 // db.collection("clientes").document("OPpLzJFx6CD8VilCvy4t").collection("cuponera").add(datosACargar)
 
-                db.collection("clientes").add(datosACargar).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                db.collection("clientes").document(documentId).collection("cuponera").add(datosACargar).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
@@ -155,26 +136,27 @@ public class DatosClienteFragment extends Fragment {
 
             }
         });
-
         btnTraer.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
 
-                db.collection("clientes").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                db.collection("clientes").document(documentId).collection("cuponera").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
-                                String nombreTxt = document.getString(Constantes.NOMBRE);
+                                String tipoCuponera = document.getString(Constantes.TIPO);
+                                String tituloTxt = document.getString(Constantes.TITULO);
                                 String direccionTxt = document.getString(Constantes.DIRECCION);
+                                String mailTxt = document.getString(Constantes.MAIL);
                                 String telefonoTxt = document.getString(Constantes.TELEFONO);
-                                String categoriaTxt = document.getString(Constantes.CATEGORIA);
-                                datosTraidos.setText("BIENVENIDO : " + nombreTxt +
+                                String descripcionTxt = document.getString(Constantes.DESCRIPCION);
+                                datosCuponera.setText("UD. acaba de Publicar : " + tipoCuponera +"\n"+tituloTxt+"\n"+ descripcionTxt+
                                         "\n" + direccionTxt +
                                         "   \n     " + telefonoTxt +
-                                        "   \n   " + categoriaTxt);
+                                        "   \n   " + mailTxt);
 
                             }
                         } else {
@@ -187,8 +169,14 @@ public class DatosClienteFragment extends Fragment {
 
 
         });
+
         return view;
     }
+
+
+
+
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -200,8 +188,8 @@ public class DatosClienteFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof DatosClienteFragment.OnFragmentInteractionListener) {
-            mListener = (DatosClienteFragment.OnFragmentInteractionListener) context;
+        if (context instanceof CuponeraClienteFragment.OnFragmentInteractionListener) {
+            mListener = (CuponeraClienteFragment.OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");

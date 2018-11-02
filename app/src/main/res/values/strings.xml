@@ -16,7 +16,7 @@
     <string name="Categoria">Categoria</string>
 
 
-    <string name="nombre">Nombre</string>
+    <string name="nombre_local">Nombre del local o servicio</string>
     <string name="admin_comercio">ADMIN COMERCIO</string>
     <string name="hint_nombre">escriba el nombre de su comercio o servicio</string>
     <string name="hint_direccion">escriba direccion actual</string>
@@ -36,7 +36,7 @@
     <string name="pais">Pais</string>
     <string name="descripcion">Descripcion</string>
     <string name="hint_descripcion">escriba una breve descripcion de su comercio o servicio</string>
-    <string name="foto">foto de contacto</string>
+    <string name="foto">foto de perfil</string>
     <string name="traer_datos">traer datos</string>
     <string name="cargar_datos">cargar datos</string>
     <string name="cargar_foto">cargar foto</string>
@@ -50,6 +50,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_admin_cliente">AdminClienteActivity</string>
 
 
 </resources>
