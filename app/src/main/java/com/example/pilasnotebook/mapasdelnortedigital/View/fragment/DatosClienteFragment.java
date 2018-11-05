@@ -30,6 +30,7 @@ import com.example.pilasnotebook.mapasdelnortedigital.R;
 import com.example.pilasnotebook.mapasdelnortedigital.model.POJO.Cliente;
 import com.example.pilasnotebook.mapasdelnortedigital.model.POJO.Zona;
 import com.example.pilasnotebook.mapasdelnortedigital.utils.Constantes;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -40,6 +41,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -60,12 +62,12 @@ public class DatosClienteFragment extends Fragment {
     private TextView datosTraidos;
     private EditText nombreEd, descripcionEd, direccionEd, localidadED,
             codigoPostalEd, provinciaEd, paisEd, telefonoEd, mailEd;
-    private ImageView fotodeContacto;
+    protected ImageView fotodeContacto;
     private Button btnCargarFoto, btnCargar, btnTraer;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private StorageReference storage = FirebaseStorage.getInstance().getReference();
 
-    private Uri path;
+    private Uri filePath;
     //String documentId= db.collection("clientes").document().getId();
     protected Spinner categorias;
 
@@ -135,7 +137,6 @@ public class DatosClienteFragment extends Fragment {
                 String paisTxt = paisEd.getText().toString().trim();
                 String telefonoTxt = telefonoEd.getText().toString().trim();
                 String mailTxt = mailEd.getText().toString().trim();
-
                 cliente = new Cliente(nombreTxt, categoriaTxt, direccionTxt);
                 //String fotoTxt = fotodeContacto.get;
 
@@ -156,8 +157,7 @@ public class DatosClienteFragment extends Fragment {
                 datosACargar.put(Constantes.PAIS, paisTxt);
                 datosACargar.put(Constantes.TELEFONO, telefonoTxt);
                 datosACargar.put(Constantes.MAIL, mailTxt);
-                //datosACargar.put(Constantes.FOTO, fotoTxt);
-
+                subirAStorageUri(filePath);
 
                 db.collection("clientes").add(datosACargar).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
@@ -194,18 +194,20 @@ public class DatosClienteFragment extends Fragment {
                                 String paisTxt = document.getString(Constantes.PAIS);
                                 String telefonoTxt = document.getString(Constantes.TELEFONO);
                                 String mailTxt = document.getString(Constantes.MAIL);
+                                String fotoTxt = document.getString(Constantes.FOTO);
 
-                                datosTraidos.setText("DATOS CARGADOS : "+"\n"
-                                        + nombreTxt + "\n"
-                                        + descripcionTxt + "\n"
-                                        + categoriaTxt + "   \n     "
-                                        + direccionTxt + "   \n     "
-                                        + localidadTxt + "   \n   "
-                                        + codPostTxt + "   \n   "
-                                        + provinciaTxt + "   \n   "
-                                        + paisTxt + "   \n   "
-                                        + telefonoTxt + "   \n   "
-                                        + mailTxt);
+                                datosTraidos.setText("DATOS CARGADOS : " + "\n"+
+                                        "Foto:  " + fotoTxt + "\n"
+                                                + nombreTxt + "\n"
+                                                + descripcionTxt + "\n"
+                                                + categoriaTxt + "   \n     "
+                                                + direccionTxt + "   \n     "
+                                                + localidadTxt + "   \n   "
+                                                + codPostTxt + "   \n   "
+                                                + provinciaTxt + "   \n   "
+                                                + paisTxt + "   \n   "
+                                                + telefonoTxt + "   \n   "
+                                                + mailTxt);
 
                             }
                         } else {
@@ -243,10 +245,70 @@ public class DatosClienteFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK) {
-            Uri path = data.getData();
-            fotodeContacto.setImageURI(path);
+            filePath = data.getData();
+            fotodeContacto.setImageURI(filePath);
         }
     }
+
+
+   /* public void subirAStorage() {
+        StorageReference storageRef = storage.child(storage.getName());
+        fotodeContacto.setDrawingCacheEnabled(true);
+        fotodeContacto.buildDrawingCache();
+        Bitmap bitmap = ((BitmapDrawable) fotodeContacto.getDrawable()).getBitmap();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        UploadTask uploadTask = storageRef.putBytes(data);
+        ((UploadTask) uploadTask).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                taskSnapshot.getMetadata();
+
+            }
+        });
+    }*/
+
+    public void subirAStorageUri(Uri filePath) {
+
+        if (filePath != null) {
+
+            final StorageReference storageRef = storage.child("fotos/" + filePath.getLastPathSegment());
+            storageRef.putFile(filePath).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()) {
+                        throw new Exception();
+                    }
+
+                    return storageRef.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                Map<String, Object> datosACargar = new HashMap<String, Object>();
+
+
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+
+                        Uri downloadLink = task.getResult();
+
+                        datosACargar.put(Constantes.FOTO, downloadLink);
+
+                    }
+
+                }
+            });
+        }
+    }
+
+// Register observers to listen for when the download is done or if it fails
 
 
     // TODO: Rename method, update argument and hook method into UI event
