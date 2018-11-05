@@ -105,5 +105,3 @@ public class MapaClienteFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 }
-
-

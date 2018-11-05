@@ -1,14 +1,17 @@
 package com.example.pilasnotebook.mapasdelnortedigital.model.POJO;
 
 
+import android.net.Uri;
+
 import java.io.Serializable;
 import java.util.List;
 
 public class Cliente implements Serializable {
 
-
-    private int categoria;
+    private String id;
+    private String categoria;
     private String nombreComercio;
+    private String foto;
     private Zona zona;
     private String telefono;
     private String mail;
@@ -22,7 +25,7 @@ public class Cliente implements Serializable {
 
     }
 
-    public Cliente(String nombre, int categoria, String direccion) {
+    public Cliente(String nombre, String categoria, String direccion) {
         this.nombreComercio = nombre;
         this.categoria = categoria;
         this.direccion = direccion;
@@ -87,11 +90,27 @@ public class Cliente implements Serializable {
         this.redes = redes;
     }
 
-    public int getCategoria() {
+    public String getCategoria() {
         return categoria;
     }
 
-    public void setCategoria(int categoria) {
+    public void setCategoria(String categoria) {
         this.categoria = categoria;
+    }
+
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

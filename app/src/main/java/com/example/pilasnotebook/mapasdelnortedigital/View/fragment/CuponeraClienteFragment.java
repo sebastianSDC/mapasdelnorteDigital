@@ -7,8 +7,10 @@ package com.example.pilasnotebook.mapasdelnortedigital.view.fragment;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -19,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -36,6 +39,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.app.Activity.RESULT_OK;
+
 
 public class CuponeraClienteFragment extends Fragment {
 
@@ -44,12 +49,12 @@ public class CuponeraClienteFragment extends Fragment {
 
     private static final String TAG = "tag";
 
-    private EditText tituloEd, descripcionEd, direccionEd, telefonoEd, mailEd;
+    private EditText fechaEd, tituloEd, descripcionEd, nombreEd, direccionEd, telefonoEd, mailEd;
     private Spinner tipos;
-
-    private Button btnCargar, btnTraer;
+    private ImageView fotoCuponera;
+    private Button btnCargarFoto, btnCargar, btnTraer;
     private TextView datosCuponera;
-    private String tipoCuponera;
+    private String tipoCuponeraTxt;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     String documentId= db.collection("clientes").document().getId();
@@ -66,12 +71,17 @@ public class CuponeraClienteFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_cuponera, container, false);
 
+        tipos = view.findViewById(R.id.spinn_tipo_cuponera);
+        fechaEd = view.findViewById(R.id.ed_fecha_cuponera);
+        btnCargarFoto = view.findViewById(R.id.btn_cargarFoto_cuponera);
+        fotoCuponera = view.findViewById(R.id.imagen_cuponera);
         tituloEd = view.findViewById(R.id.ed_titulo_cuponera);
         descripcionEd = view.findViewById(R.id.ed_descripcion_cuponera);
-        direccionEd = view.findViewById(R.id.inDireccion_Comercio);
-        telefonoEd = view.findViewById(R.id.inTelefono_Comercio);
-        mailEd = view.findViewById(R.id.inMail_Comercio);
-        tipos = view.findViewById(R.id.spinn_tipo_cuponera);
+        nombreEd = view.findViewById(R.id.ed_nombre_comercio_cuponera);
+        direccionEd = view.findViewById(R.id.ed_direccion_comercio_cuponera);
+        telefonoEd = view.findViewById(R.id.ed_telefono_comercio_cuponera);
+        mailEd = view.findViewById(R.id.ed_mail_comercio_cuponera);
+
 
         datosCuponera = view.findViewById(R.id.datos_cuponera);
         btnCargar = view.findViewById(R.id.btn_cargar_cuponera);
@@ -85,7 +95,7 @@ public class CuponeraClienteFragment extends Fragment {
         tipos.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                tipoCuponera = parent.getItemAtPosition(position).toString();
+                tipoCuponeraTxt = parent.getItemAtPosition(position).toString();
             }
 
             @Override
@@ -99,24 +109,28 @@ public class CuponeraClienteFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+                String fechaTxt = fechaEd.getText().toString().trim();
                 String tituloTxt = tituloEd.getText().toString().trim();
                 String descripcionTxt = descripcionEd.getText().toString().trim();
-                String mailTxt = mailEd.getText().toString().trim();
+                String nombreTxt = nombreEd.getText().toString().trim();
                 String direccionTxt = direccionEd.getText().toString().trim();
                 String telefonoTxt = telefonoEd.getText().toString().trim();
+                String mailTxt = mailEd.getText().toString().trim();
 
-                if (tituloTxt.isEmpty() || direccionTxt.isEmpty() || telefonoTxt.isEmpty() || tipoCuponera.isEmpty()) {
+                if (tituloTxt.isEmpty() || direccionTxt.isEmpty() || telefonoTxt.isEmpty() || tipoCuponeraTxt.isEmpty()) {
                     return;
                 }
 
                 Map<String, Object> datosACargar = new HashMap<String, Object>();
-                datosACargar.put(Constantes.TIPO, tipoCuponera);
+
+                datosACargar.put(Constantes.TIPO, tipoCuponeraTxt);
+                datosACargar.put(Constantes.FECHA, fechaTxt);
                 datosACargar.put(Constantes.TITULO, tituloTxt);
                 datosACargar.put(Constantes.DESCRIPCION, descripcionTxt);
+                datosACargar.put(Constantes.NOMBRE, nombreTxt);
                 datosACargar.put(Constantes.DIRECCION, direccionTxt);
                 datosACargar.put(Constantes.TELEFONO, telefonoTxt);
                 datosACargar.put(Constantes.MAIL, mailTxt);
-
 
                 //esta instruccion es para poner un cliente con sub-coleccion cuponera...
                 // db.collection("clientes").document("OPpLzJFx6CD8VilCvy4t").collection("cuponera").add(datosACargar)
@@ -147,16 +161,24 @@ public class CuponeraClienteFragment extends Fragment {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
-                                String tipoCuponera = document.getString(Constantes.TIPO);
+                                String tipoCuponeraTxt = document.getString(Constantes.TIPO);
+                                String fechaTxt = document.getString(Constantes.FECHA);
                                 String tituloTxt = document.getString(Constantes.TITULO);
-                                String direccionTxt = document.getString(Constantes.DIRECCION);
-                                String mailTxt = document.getString(Constantes.MAIL);
-                                String telefonoTxt = document.getString(Constantes.TELEFONO);
                                 String descripcionTxt = document.getString(Constantes.DESCRIPCION);
-                                datosCuponera.setText("UD. acaba de Publicar : " + tipoCuponera +"\n"+tituloTxt+"\n"+ descripcionTxt+
-                                        "\n" + direccionTxt +
-                                        "   \n     " + telefonoTxt +
-                                        "   \n   " + mailTxt);
+                                String nombreTxt = document.getString(Constantes.NOMBRE);
+                                String direccionTxt = document.getString(Constantes.DIRECCION);
+                                String telefonoTxt = document.getString(Constantes.TELEFONO);
+                                String mailTxt = document.getString(Constantes.MAIL);
+
+                                datosCuponera.setText("DATOS CARGADOS : "
+                                        + tipoCuponeraTxt + "\n"
+                                        + fechaTxt + "\n"
+                                        + tituloTxt + "\n"
+                                        + descripcionTxt + "\n"
+                                        + nombreTxt + "\n"
+                                        + direccionTxt + "   \n     "
+                                        + telefonoTxt + "   \n   "
+                                        + mailTxt);
 
                             }
                         } else {
@@ -170,12 +192,35 @@ public class CuponeraClienteFragment extends Fragment {
 
         });
 
+        btnCargarFoto.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                cargarFoto();
+            }
+        });
+
         return view;
     }
 
 
+    public void cargarFoto() {
+
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent intent1 = intent.setType("image/");
+        startActivityForResult(Intent.createChooser(intent, "Seleccione la aplicación"), 10);
+    }
 
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            Uri path = data.getData();
+            fotoCuponera.setImageURI(path);
+        }
+    }
 
 
     // TODO: Rename method, update argument and hook method into UI event

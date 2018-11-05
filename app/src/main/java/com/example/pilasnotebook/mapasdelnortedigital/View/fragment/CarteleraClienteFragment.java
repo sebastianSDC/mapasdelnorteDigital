@@ -7,8 +7,10 @@ package com.example.pilasnotebook.mapasdelnortedigital.view.fragment;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -19,10 +21,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.pilasnotebook.mapasdelnortedigital.R;
+import com.example.pilasnotebook.mapasdelnortedigital.utils.Constantes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -35,29 +39,24 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.app.Activity.RESULT_OK;
+
 
 public class CarteleraClienteFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private static final String TIPO = "tipo";
-    private static final String FECHA = "fecha";
-    private static final String TITULO = "titulo";
-    private static final String DESCRIPCION = "descripcion";
-    private static final String DIRECCION = "direccion";
-    private static final String TELEFONO = "telefono";
-    private static final String MAIL = "mail";
-    private static final String TAG = "tag";
+    String TAG = Constantes.TAG;
 
-    private EditText tituloEd, descripcionEd, direccionEd, telefonoEd, mailEd;
+    private EditText fechaEd, tituloEd, descripcionEd, nombreEd, direccionEd, telefonoEd, mailEd;
     private Spinner tipos;
 
-    private Button btnCargar, btnTraer;
-    private TextView datosCuponera;
-    private String tipoCuponera;
-
+    private Button btnCargarFoto, btnCargar, btnTraer;
+    private TextView datosCartelera;
+    private String tipoCarteleraTxt;
+    private ImageView fotoCartelera;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    String documentId= db.collection("clientes").document().getId();
+    String documentId = db.collection("clientes").document().getId();
 
 
     public CarteleraClienteFragment() {
@@ -69,28 +68,31 @@ public class CarteleraClienteFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_cuponera, container, false);
+        View view = inflater.inflate(R.layout.fragment_cartelera, container, false);
 
-        tituloEd = view.findViewById(R.id.ed_titulo_cuponera);
-        descripcionEd = view.findViewById(R.id.ed_descripcion_cuponera);
-        direccionEd = view.findViewById(R.id.inDireccion_Comercio);
-        telefonoEd = view.findViewById(R.id.inTelefono_Comercio);
-        mailEd = view.findViewById(R.id.inMail_Comercio);
-        tipos = view.findViewById(R.id.spinn_tipo_cuponera);
-
-        datosCuponera = view.findViewById(R.id.datos_cuponera);
-        btnCargar = view.findViewById(R.id.btn_cargar_cuponera);
-        btnTraer = view.findViewById(R.id.btn_traer_datos_cuponera);
+        tipos = view.findViewById(R.id.spinn_tipo_cartelera);
+        fechaEd = view.findViewById(R.id.ed_fecha_cartelera);
+        btnCargarFoto = view.findViewById(R.id.btn_cargarFoto_cartelera);
+        fotoCartelera = view.findViewById(R.id.imagen_cartelera);
+        tituloEd = view.findViewById(R.id.ed_titulo_cartelera);
+        descripcionEd = view.findViewById(R.id.ed_descripcion_cartelera);
+        nombreEd = view.findViewById(R.id.ed_nombre_comercio_cartelera);
+        direccionEd = view.findViewById(R.id.ed_direccion_comercio);
+        telefonoEd = view.findViewById(R.id.ed_telefono_comercio);
+        mailEd = view.findViewById(R.id.ed_mail_comercio);
+        datosCartelera = view.findViewById(R.id.datos_cartelera);
+        btnCargar = view.findViewById(R.id.btn_cargar_cartelera);
+        btnTraer = view.findViewById(R.id.btn_traer_datos_cartelera);
 
         ArrayAdapter<CharSequence> adapterSpinCAtegorias = ArrayAdapter.createFromResource(getActivity(),
-                R.array.combo_tipos_cuponera, android.R.layout.simple_spinner_item);
+                R.array.combo_tipos_cartelera, android.R.layout.simple_spinner_item);
 
         tipos.setAdapter(adapterSpinCAtegorias);
 
         tipos.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                tipoCuponera = parent.getItemAtPosition(position).toString();
+                tipoCarteleraTxt = parent.getItemAtPosition(position).toString();
             }
 
             @Override
@@ -104,29 +106,32 @@ public class CarteleraClienteFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+                String fechaTxt = tituloEd.getText().toString().trim();
                 String tituloTxt = tituloEd.getText().toString().trim();
                 String descripcionTxt = descripcionEd.getText().toString().trim();
-                String mailTxt = mailEd.getText().toString().trim();
+                String nombreTxt = nombreEd.getText().toString().trim();
                 String direccionTxt = direccionEd.getText().toString().trim();
                 String telefonoTxt = telefonoEd.getText().toString().trim();
+                String mailTxt = mailEd.getText().toString().trim();
 
-                if (tituloTxt.isEmpty() || direccionTxt.isEmpty() || telefonoTxt.isEmpty() || tipoCuponera.isEmpty()) {
+                if (tituloTxt.isEmpty() || direccionTxt.isEmpty() || telefonoTxt.isEmpty() || tipoCarteleraTxt.isEmpty()) {
                     return;
                 }
 
                 Map<String, Object> datosACargar = new HashMap<String, Object>();
-                datosACargar.put(TIPO, tipoCuponera);
-                datosACargar.put(TITULO, tituloTxt);
-                datosACargar.put(DESCRIPCION, descripcionTxt);
-                datosACargar.put(DIRECCION, direccionTxt);
-                datosACargar.put(TELEFONO, telefonoTxt);
-                datosACargar.put(MAIL, mailTxt);
-
+                datosACargar.put(Constantes.TIPO, tipoCarteleraTxt);
+                datosACargar.put(Constantes.FECHA, fechaTxt);
+                datosACargar.put(Constantes.TITULO, tituloTxt);
+                datosACargar.put(Constantes.DESCRIPCION, descripcionTxt);
+                datosACargar.put(Constantes.NOMBRE, nombreTxt);
+                datosACargar.put(Constantes.DIRECCION, direccionTxt);
+                datosACargar.put(Constantes.TELEFONO, telefonoTxt);
+                datosACargar.put(Constantes.MAIL, mailTxt);
 
                 //esta instruccion es para poner un cliente con sub-coleccion cuponera...
                 // db.collection("clientes").document("OPpLzJFx6CD8VilCvy4t").collection("cuponera").add(datosACargar)
 
-                db.collection("clientes").document(documentId).collection("cuponera").add(datosACargar).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                db.collection("clientes").document(documentId).collection("cartelera").add(datosACargar).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
@@ -138,31 +143,38 @@ public class CarteleraClienteFragment extends Fragment {
                                 Log.w(TAG, "Error adding document", e);
                             }
                         });
-
             }
         });
+
         btnTraer.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
 
-                db.collection("clientes").document(documentId).collection("cuponera").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                db.collection("clientes").document(documentId).collection("cartelera").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
-                                String tipoCuponera = document.getString(TIPO);
-                                String tituloTxt = document.getString(TITULO);
-                                String direccionTxt = document.getString(DIRECCION);
-                                String mailTxt = document.getString(MAIL);
-                                String telefonoTxt = document.getString(TELEFONO);
-                                String descripcionTxt = document.getString(DESCRIPCION);
-                                datosCuponera.setText("UD. acaba de Publicar : " + tipoCuponera +"\n"+tituloTxt+"\n"+ descripcionTxt+
-                                        "\n" + direccionTxt +
-                                        "   \n     " + telefonoTxt +
-                                        "   \n   " + mailTxt);
+                                String tipoCarteleraTxt = document.getString(Constantes.TIPO);
+                                String fechaTxt = document.getString(Constantes.FECHA);
+                                String tituloTxt = document.getString(Constantes.TITULO);
+                                String descripcionTxt = document.getString(Constantes.DESCRIPCION);
+                                String nombreTxt = document.getString(Constantes.NOMBRE);
+                                String direccionTxt = document.getString(Constantes.DIRECCION);
+                                String telefonoTxt = document.getString(Constantes.TELEFONO);
+                                String mailTxt = document.getString(Constantes.MAIL);
 
+                                datosCartelera.setText("DATOS CARGADOS : "
+                                        + tipoCarteleraTxt + "\n"
+                                        + fechaTxt + "\n"
+                                        + tituloTxt + "\n"
+                                        + descripcionTxt + "\n"
+                                        + nombreTxt + "\n"
+                                        + direccionTxt + "   \n     "
+                                        + telefonoTxt + "   \n   "
+                                        + mailTxt);
                             }
                         } else {
                             Log.w(TAG, "Error getting documents.", task.getException());
@@ -175,13 +187,34 @@ public class CarteleraClienteFragment extends Fragment {
 
         });
 
+        btnCargarFoto.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                cargarFoto();
+            }
+        });
+
         return view;
     }
 
+    public void cargarFoto() {
+
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent intent1 = intent.setType("image/");
+        startActivityForResult(Intent.createChooser(intent, "Seleccione la aplicación"), 10);
+    }
 
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-
+        if (resultCode == RESULT_OK) {
+            Uri path = data.getData();
+            fotoCartelera.setImageURI(path);
+        }
+    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

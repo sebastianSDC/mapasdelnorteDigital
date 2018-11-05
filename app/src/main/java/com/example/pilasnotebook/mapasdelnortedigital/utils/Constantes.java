@@ -4,6 +4,7 @@ public final class Constantes {
 
     // constante universal
     public static final String TAG = "tag";
+    public static final String FOTOS_ROOT_STORAGE = "fotosperfil/";//para subir imagenes al storage
 
     //constantes admin cliente: datos
     public static final String NOMBRE = "nombre";

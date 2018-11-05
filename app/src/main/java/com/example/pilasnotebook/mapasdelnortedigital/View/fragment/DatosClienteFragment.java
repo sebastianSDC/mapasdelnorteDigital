@@ -7,8 +7,10 @@ package com.example.pilasnotebook.mapasdelnortedigital.view.fragment;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -36,15 +38,19 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.app.Activity.RESULT_OK;
+
 
 public class DatosClienteFragment extends Fragment {
 
-    private OnFragmentInteractionListener mListener; // interface
 
+    private OnFragmentInteractionListener mListener; // interface
     String TAG = Constantes.TAG;
 
     private String categoriaTxt;
@@ -52,10 +58,14 @@ public class DatosClienteFragment extends Fragment {
     private Zona zona;
     private Cliente cliente;
     private TextView datosTraidos;
-    private EditText nombreEd, descripcionEd, direccionEd, localidadED, codigoPostalEd, provinciaEd, paisEd, telefonoEd, mailEd;
+    private EditText nombreEd, descripcionEd, direccionEd, localidadED,
+            codigoPostalEd, provinciaEd, paisEd, telefonoEd, mailEd;
     private ImageView fotodeContacto;
     private Button btnCargarFoto, btnCargar, btnTraer;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private StorageReference storage = FirebaseStorage.getInstance().getReference();
+
+    private Uri path;
     //String documentId= db.collection("clientes").document().getId();
     protected Spinner categorias;
 
@@ -67,7 +77,7 @@ public class DatosClienteFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -78,7 +88,7 @@ public class DatosClienteFragment extends Fragment {
         nombreEd = (EditText) view.findViewById(R.id.ed_nombre_comercio);
         descripcionEd = (EditText) view.findViewById(R.id.ed_descripcion_comercio);
         categorias = (Spinner) view.findViewById(R.id.spinn_categorias_comercio);
-        btnCargarFoto = (Button)view.findViewById(R.id.btn_cargarFoto_comercio);
+        btnCargarFoto = (Button) view.findViewById(R.id.btn_cargarFoto_comercio);
         fotodeContacto = (ImageView) view.findViewById(R.id.imagen_contacto_comercio);
         direccionEd = (EditText) view.findViewById(R.id.ed_direccion_comercio);
         localidadED = (EditText) view.findViewById(R.id.ed_localidad_comercio);
@@ -117,42 +127,49 @@ public class DatosClienteFragment extends Fragment {
 
 
                 String nombreTxt = nombreEd.getText().toString().trim();
+                String descripcionTxt = descripcionEd.getText().toString().trim();
                 String direccionTxt = direccionEd.getText().toString().trim();
+                String localidadTxt = localidadED.getText().toString().trim();
+                String codPostTxt = codigoPostalEd.getText().toString().trim();
+                String provinciaTxt = provinciaEd.getText().toString().trim();
+                String paisTxt = paisEd.getText().toString().trim();
                 String telefonoTxt = telefonoEd.getText().toString().trim();
+                String mailTxt = mailEd.getText().toString().trim();
 
+                cliente = new Cliente(nombreTxt, categoriaTxt, direccionTxt);
+                //String fotoTxt = fotodeContacto.get;
 
-                cliente = new Cliente();
 
                 if (nombreTxt.isEmpty() || direccionTxt.isEmpty() || telefonoTxt.isEmpty() || categoriaTxt.isEmpty()) {
 
                     Toast.makeText(getActivity(), "debe completar los campos obligatorios", Toast.LENGTH_LONG).show();
-
-                    return ;
                 }
 
                 Map<String, Object> datosACargar = new HashMap<String, Object>();
                 datosACargar.put(Constantes.NOMBRE, nombreTxt);
-                datosACargar.put(Constantes.DIRECCION, direccionTxt);
-                datosACargar.put(Constantes.TELEFONO, telefonoTxt);
+                datosACargar.put(Constantes.DESCRIPCION, descripcionTxt);
                 datosACargar.put(Constantes.CATEGORIA, categoriaTxt);
+                datosACargar.put(Constantes.DIRECCION, direccionTxt);
+                datosACargar.put(Constantes.LOCALIDAD, localidadTxt);
+                datosACargar.put(Constantes.CODIGO_POSTAL, codPostTxt);
+                datosACargar.put(Constantes.PROVINCIA, provinciaTxt);
+                datosACargar.put(Constantes.PAIS, paisTxt);
+                datosACargar.put(Constantes.TELEFONO, telefonoTxt);
+                datosACargar.put(Constantes.MAIL, mailTxt);
+                //datosACargar.put(Constantes.FOTO, fotoTxt);
 
-
-                //esta instruccion es para poner un cliente con sub-coleccion cuponera...
-                // db.collection("clientes").document("OPpLzJFx6CD8VilCvy4t").collection("cuponera").add(datosACargar)
 
                 db.collection("clientes").add(datosACargar).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
                     }
-                })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w(TAG, "Error adding document", e);
-                            }
-                        });
-
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error adding document", e);
+                    }
+                });
             }
         });
 
@@ -168,13 +185,27 @@ public class DatosClienteFragment extends Fragment {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                                 String nombreTxt = document.getString(Constantes.NOMBRE);
-                                String direccionTxt = document.getString(Constantes.DIRECCION);
-                                String telefonoTxt = document.getString(Constantes.TELEFONO);
+                                String descripcionTxt = document.getString(Constantes.DESCRIPCION);
                                 String categoriaTxt = document.getString(Constantes.CATEGORIA);
-                                datosTraidos.setText("BIENVENIDO : " + nombreTxt +
-                                        "\n" + direccionTxt +
-                                        "   \n     " + telefonoTxt +
-                                        "   \n   " + categoriaTxt);
+                                String direccionTxt = document.getString(Constantes.DIRECCION);
+                                String localidadTxt = document.getString(Constantes.LOCALIDAD);
+                                String codPostTxt = document.getString(Constantes.CODIGO_POSTAL);
+                                String provinciaTxt = document.getString(Constantes.PROVINCIA);
+                                String paisTxt = document.getString(Constantes.PAIS);
+                                String telefonoTxt = document.getString(Constantes.TELEFONO);
+                                String mailTxt = document.getString(Constantes.MAIL);
+
+                                datosTraidos.setText("DATOS CARGADOS : "+"\n"
+                                        + nombreTxt + "\n"
+                                        + descripcionTxt + "\n"
+                                        + categoriaTxt + "   \n     "
+                                        + direccionTxt + "   \n     "
+                                        + localidadTxt + "   \n   "
+                                        + codPostTxt + "   \n   "
+                                        + provinciaTxt + "   \n   "
+                                        + paisTxt + "   \n   "
+                                        + telefonoTxt + "   \n   "
+                                        + mailTxt);
 
                             }
                         } else {
@@ -187,8 +218,36 @@ public class DatosClienteFragment extends Fragment {
 
 
         });
+
+        btnCargarFoto.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                cargarFoto();
+            }
+        });
+
         return view;
     }
+
+    public void cargarFoto() {
+
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent intent1 = intent.setType("image/");
+        startActivityForResult(Intent.createChooser(intent, "Seleccione la aplicación"), 10);
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            Uri path = data.getData();
+            fotodeContacto.setImageURI(path);
+        }
+    }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -214,18 +273,9 @@ public class DatosClienteFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }
+

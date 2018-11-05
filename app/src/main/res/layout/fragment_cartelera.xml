@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_datos"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:background="@color/colorCardCliente"
+    android:orientation="vertical"
     tools:context=".view.fragment.CarteleraClienteFragment">
+
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="8dp">
+        android:layout_marginHorizontal="8dp"
+        tools:ignore="UselessParent"
+        tools:targetApi="o">
 
 
         <LinearLayout
@@ -20,12 +24,12 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/txv_cuponera"
+                android:id="@+id/txv_cartelera"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:fontFamily="@font/montserrat"
-                android:text="generar un nuevo evento de cuponera"
+                android:text="@string/texto_inicio_form"
                 android:textAllCaps="true"
                 android:textColor="@color/colorNegro"
                 android:textSize="12sp" />
@@ -51,111 +55,128 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:id="@+id/tipo_cuponera"
+                            android:id="@+id/tipo_cartelera"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_alignStart="@+id/spinn_tipo_cartelera"
                             android:layout_marginBottom="4dp"
                             android:fontFamily="@font/montserrat"
-                            android:text="tipo"
+                            android:text="@string/tipo"
                             android:textAllCaps="true"
                             android:textColor="@color/colorNegro"
                             android:textSize="12sp" />
 
                         <Spinner
-                            android:id="@+id/spinn_tipo_cuponera"
+                            android:id="@+id/spinn_tipo_cartelera"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/tipo_cuponera"
-                            android:layout_alignStart="@+id/tipo_cuponera"
-                            android:background="@drawable/edit_text_borde" />
+                            android:layout_below="@id/tipo_cartelera"
+                            android:background="@drawable/edit_text_borde"
+                            android:scrollbarSize="8dp" />
 
                         <TextView
-                            android:id="@+id/foto_cuponera"
+                            android:id="@+id/fecha_cartelera"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignBaseline="@id/tipo_cuponera"
-                            android:layout_toEndOf="@+id/tipo_cuponera"
-                            android:layout_alignStart="@+id/btn_cargarFoto_cuponera"
+                            android:layout_alignBaseline="@id/tipo_cartelera"
+                            android:layout_alignStart="@id/ed_fecha_cartelera"
                             android:fontFamily="@font/montserrat"
-                            android:text="foto"
+                            android:text="@string/fecha"
+                            android:textAllCaps="true"
+                            android:textColor="@color/colorNegro"
+                            android:textSize="12sp" />
+
+                        <EditText
+                            android:id="@+id/ed_fecha_cartelera"
+                            android:layout_width="wrap_content"
+                            android:layout_height="24dp"
+                            android:layout_alignWithParentIfMissing="true"
+                            android:layout_below="@+id/fecha_cartelera"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="4dp"
+                            android:layout_toEndOf="@+id/spinn_tipo_cartelera"
+                            android:background="@drawable/edit_text_borde"
+                            android:calendarTextColor="@color/colorCardCliente"
+                            android:hint="@string/hint_fecha"
+                            android:autofillHints="@string/hint_fecha"
+                            android:inputType="date"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/foto_cartelera"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBaseline="@id/fecha_cartelera"
+                            android:layout_alignStart="@+id/btn_cargarFoto_cartelera"
+                            android:fontFamily="@font/montserrat"
+                            android:text="@string/foto"
                             android:textAllCaps="true"
                             android:textColor="@color/colorNegro"
                             android:textSize="12sp" />
 
 
                         <Button
-                            android:id="@+id/btn_cargarFoto_cuponera"
-                            android:layout_width="wrap_content"
-                            android:layout_height="32dp"
-                            android:layout_below="@+id/foto_cuponera"
-                            android:layout_alignBaseline="@id/spinn_tipo_cuponera"
+                            android:id="@+id/btn_cargarFoto_cartelera"
+                            android:layout_width="match_parent"
+                            android:layout_height="24dp"
+                            android:layout_alignWithParentIfMissing="true"
+                            android:layout_below="@+id/foto_cartelera"
+                            android:layout_marginStart="8dp"
                             android:layout_marginTop="4dp"
-                            android:layout_marginStart="24dp"
+                            android:layout_toStartOf="@+id/imagen_cartelera"
+                            android:layout_toEndOf="@+id/ed_fecha_cartelera"
                             android:background="@drawable/edit_text_borde"
                             android:backgroundTint="@color/colorAccent"
                             android:fontFamily="@font/montserrat"
                             android:text="@string/cargar_foto"
                             android:textColor="@color/colorBlanco"
-                            android:textSize="10sp" />
+                            android:textSize="9sp"
+                            tools:ignore="SmallSp" />
 
-                        <TextView
-                            android:id="@+id/fecha_cuponera"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignBaseline="@id/foto_cuponera"
-                            android:layout_alignStart="@id/ed_fecha_cuponera"
-                            android:fontFamily="@font/montserrat"
-                            android:text="fecha"
-                            android:textAllCaps="true"
-                            android:textColor="@color/colorNegro"
-                            android:textSize="12sp" />
-
-                        <EditText
-                            android:id="@+id/ed_fecha_cuponera"
-                            android:layout_width="100dp"
-                            android:layout_height="32dp"
-                            android:layout_below="@+id/fecha_cuponera"
-                            android:layout_marginStart="24dp"
+                        <ImageView
+                            android:id="@+id/imagen_cartelera"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginStart="8dp"
                             android:layout_marginTop="4dp"
-                            android:hint="dd/mm/aaaa"
-                            android:layout_toEndOf="@id/btn_cargarFoto_cuponera"
                             android:background="@drawable/edit_text_borde"
-                            android:calendarTextColor="@color/colorCardCliente"
-                            android:textSize="12sp"
-                            android:inputType="date">
+                            android:scaleType="centerCrop"
+                            android:contentDescription="@string/foto" />
 
-                        </EditText>
 
                     </RelativeLayout>
 
 
                     <TextView
-                        android:id="@+id/titulo_cuponera"
+                        android:id="@+id/titulo_cartelera"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="4dp"
                         android:layout_marginTop="8dp"
+                        android:layout_marginBottom="4dp"
                         android:fontFamily="@font/montserrat"
-                        android:text="titulo"
+                        android:text="@string/titulo"
                         android:textAllCaps="true"
                         android:textColor="@color/colorNegro"
                         android:textSize="12sp" />
 
                     <EditText
-                        android:id="@+id/ed_titulo_cuponera"
+                        android:id="@+id/ed_titulo_cartelera"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
+                        android:autofillHints="**dato obligatorio**"
                         android:background="@drawable/edit_text_borde"
                         android:fontFamily="@font/montserrat"
                         android:hint="@string/hint_nombre"
                         android:inputType="textCapWords"
                         android:padding="8dp"
                         android:text=""
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        tools:targetApi="o" />
 
                     <TextView
-                        android:id="@+id/descripcion_cuponera"
+                        android:id="@+id/descripcion_cartelera"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
@@ -166,21 +187,48 @@
                         android:textSize="12sp" />
 
                     <EditText
-                        android:id="@+id/ed_descripcion_cuponera"
+                        android:id="@+id/ed_descripcion_cartelera"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
+                        android:autofillHints="**dato obligatorio**"
                         android:background="@drawable/edit_text_borde"
                         android:fontFamily="@font/montserrat"
-                        android:hint="en que consiste este evento de cuponera"
+                        android:hint="@string/descripcion_cuponera"
                         android:inputType="textCapSentences"
                         android:maxLines="7"
                         android:padding="8dp"
                         android:textSize="12sp"
+                        tools:targetApi="o"
                         tools:text="@tools:sample/lorem/random" />
 
                     <TextView
-                        android:id="@+id/direccion_Comercio"
+                        android:id="@+id/nombre_comercio_cartelera"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:fontFamily="@font/montserrat"
+                        android:text="@string/nombre_local"
+                        android:textAllCaps="true"
+                        android:textColor="@color/colorNegro"
+                        android:textSize="12sp" />
+
+                    <EditText
+                        android:id="@+id/ed_nombre_comercio_cartelera"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:autofillHints="**dato obligatorio**"
+                        android:background="@drawable/edit_text_borde"
+                        android:fontFamily="@font/montserrat"
+                        android:hint="@string/hint_nombre"
+                        android:inputType="textCapSentences"
+                        android:padding="8dp"
+                        android:textSize="12sp"
+                        tools:targetApi="o" />
+
+                    <TextView
+                        android:id="@+id/direccion_comercio_cartelera"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
@@ -191,20 +239,22 @@
                         android:textSize="12sp" />
 
                     <EditText
-                        android:id="@+id/inDireccion_Comercio"
+                        android:id="@+id/ed_direccion_comercio_cartelera"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
+                        android:autofillHints="**dato obligatorio**"
                         android:background="@drawable/edit_text_borde"
                         android:fontFamily="@font/montserrat"
                         android:hint="@string/hint_direccion"
                         android:inputType="textCapWords"
                         android:padding="8dp"
                         android:text=""
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        tools:targetApi="o" />
 
                     <TextView
-                        android:id="@+id/telefono_Comercio"
+                        android:id="@+id/telefono_comercio_cartelera"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
@@ -215,20 +265,22 @@
                         android:textSize="12sp" />
 
                     <EditText
-                        android:id="@+id/inTelefono_Comercio"
+                        android:id="@+id/ed_telefono_comercio_cartelera"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
+                        android:autofillHints="**dato obligatorio**"
                         android:background="@drawable/edit_text_borde"
                         android:fontFamily="@font/montserrat"
                         android:hint="@string/hint_tel"
                         android:inputType="phone"
                         android:padding="8dp"
                         android:text=""
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        tools:targetApi="o" />
 
                     <TextView
-                        android:id="@+id/mail_Comercio"
+                        android:id="@+id/mail_comercio_cartelera"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
@@ -239,70 +291,76 @@
                         android:textSize="12sp" />
 
                     <EditText
-                        android:id="@+id/inMail_Comercio"
+                        android:id="@+id/ed_mail_comercio_cartelera"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
+                        android:autofillHints="**dato obligatorio** complete este campo"
                         android:background="@drawable/edit_text_borde"
                         android:fontFamily="@font/montserrat"
                         android:hint="@string/hint_mail"
                         android:inputType="textEmailAddress"
                         android:padding="8dp"
                         android:text=""
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        tools:targetApi="o" />
 
 
                 </LinearLayout>
             </android.support.v7.widget.CardView>
+
             <Button
-                android:id="@+id/btn_cargar_cuponera"
+                android:id="@+id/btn_cargar_cartelera"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
-                android:maxHeight="50dp"
+                android:layout_marginBottom="8dp"
                 android:background="@drawable/edit_text_borde"
                 android:backgroundTint="@color/colorAccent"
-                android:textAlignment="center"
-                android:text="cargar cuponera"
                 android:fontFamily="@font/montserrat"
-                android:textColor="@color/colorCardCliente"
-                android:layout_marginBottom="8dp"/>
+                android:maxHeight="50dp"
+                android:text="@string/cargar_datos"
+                android:textAlignment="center"
+                android:textColor="@color/colorBlanco" />
+
+            <Button
+                android:id="@+id/btn_traer_datos_cartelera"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/edit_text_borde"
+                android:backgroundTint="@color/colorAccent"
+                android:fontFamily="@font/montserrat"
+                android:maxHeight="50dp"
+                android:text="@string/mostrar_datos_cargados"
+                android:textAlignment="center"
+                android:textColor="@color/colorBlanco" />
+
 
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
+                android:padding="8dp"
                 android:backgroundTint="@color/colorBlanco"
                 android:elevation="16dp"
                 app:cardCornerRadius="10dp">
 
                 <TextView
-                    android:id="@+id/datos_cuponera"
+                    android:id="@+id/datos_cartelera"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginVertical="16dp"
+                    android:layout_marginHorizontal="8dp"
                     android:fontFamily="@font/montserrat"
-                    android:maxLines="5"
+                    android:maxLines="10"
+                    android:lineSpacingMultiplier="1.5"
                     android:text=""
                     android:textAlignment="center"
                     android:textColor="@color/colorNegro"
                     android:textSize="12sp"
                     tools:text="@tools:sample/lorem/random" />
+
             </android.support.v7.widget.CardView>
-
-            <Button
-                android:id="@+id/btn_traer_datos_cuponera"
-                android:layout_width="match_parent"
-                android:layout_height="35dp"
-                android:maxHeight="50dp"
-                android:layout_marginBottom="90dp"
-                android:background="@drawable/edit_text_borde"
-                android:backgroundTint="@color/colorAccent"
-                android:textAlignment="center"
-                android:fontFamily="@font/montserrat"
-                android:text="traer cuponera"
-                android:textColor="@color/colorCardCliente"/>
-
-
         </LinearLayout>
     </ScrollView>
-
-</FrameLayout>
+</LinearLayout>

@@ -151,7 +151,7 @@ public class ViewPagerAdminActivity extends AppCompatActivity implements Cartele
         @Nullable
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-             super.onCreateView(inflater, container, savedInstanceState);
+            super.onCreateView(inflater, container, savedInstanceState);
             View view =inflater.inflate(R.layout.activity_view_pager_admin, container, false);
 
             return view;
