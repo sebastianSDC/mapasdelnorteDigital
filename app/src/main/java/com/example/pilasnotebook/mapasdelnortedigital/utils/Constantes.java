@@ -1,10 +1,19 @@
 package com.example.pilasnotebook.mapasdelnortedigital.utils;
 
+import android.app.AlertDialog;
+
+import com.example.pilasnotebook.mapasdelnortedigital.view.fragment.DatosClienteFragment;
+
 public final class Constantes {
 
     // constante universal
     public static final String TAG = "tag";
     public static final String FOTOS_ROOT_STORAGE = "fotosperfil/";//para subir imagenes al storage
+
+    public static final int COD_CAMARA =20;  //para abrir camara y tomar la foto
+    public static final int COD_GALERIA =10; // para abrir galeria y seleccionar imagen.
+
+
 
     //constantes admin cliente: datos
     public static final String NOMBRE = "nombre";
