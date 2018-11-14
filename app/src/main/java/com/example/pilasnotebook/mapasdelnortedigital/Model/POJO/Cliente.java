@@ -1,8 +1,6 @@
 package com.example.pilasnotebook.mapasdelnortedigital.model.POJO;
 
 
-import android.net.Uri;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -29,7 +27,6 @@ public class Cliente implements Serializable {
         this.nombreComercio = nombre;
         this.categoria = categoria;
         this.direccion = direccion;
-
 
 
     }
