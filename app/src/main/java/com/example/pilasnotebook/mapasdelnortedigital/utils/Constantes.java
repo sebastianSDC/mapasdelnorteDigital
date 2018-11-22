@@ -13,6 +13,8 @@ public final class Constantes {
     public static final int COD_CAMARA =20;  //para abrir camara y tomar la foto
     public static final int COD_GALERIA =10; // para abrir galeria y seleccionar imagen.
 
+    public static final int MAX_ANCHO= 400;
+    public static final int MAX_ALTO= 400;
 
 
     //constantes admin cliente: datos

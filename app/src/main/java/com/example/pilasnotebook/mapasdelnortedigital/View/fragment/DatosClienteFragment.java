@@ -7,13 +7,17 @@ package com.example.pilasnotebook.mapasdelnortedigital.view.fragment;
 
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -32,7 +36,6 @@ import android.widget.Toast;
 
 import com.example.pilasnotebook.mapasdelnortedigital.R;
 import com.example.pilasnotebook.mapasdelnortedigital.model.POJO.Cliente;
-import com.example.pilasnotebook.mapasdelnortedigital.model.POJO.Zona;
 import com.example.pilasnotebook.mapasdelnortedigital.utils.Constantes;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -46,18 +49,13 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.kbeanie.multipicker.api.CacheLocation;
 import com.kbeanie.multipicker.api.CameraImagePicker;
 import com.kbeanie.multipicker.api.ImagePicker;
-import com.kbeanie.multipicker.api.Picker;
-import com.kbeanie.multipicker.api.callbacks.ImagePickerCallback;
-import com.kbeanie.multipicker.api.entity.ChosenImage;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -70,19 +68,18 @@ import static android.support.v4.content.ContextCompat.checkSelfPermission;
 public class DatosClienteFragment extends Fragment {
 
 
-    private OnFragmentInteractionListener mListener; // interface
+    private OnFragmentInteractionListener mListener; // INTERFACE
     String TAG = Constantes.TAG;
 
     private final String CARPETA_RAIZ = "MAPASDELNORTE/";
     private final String RUTA_IMAGEN = CARPETA_RAIZ + "fotos";
     private String path;
-    private File foto;
     private Uri fotoPerfilUri;
 
     private final Map<String, Object> datosACargar = new HashMap<String, Object>();
     private String categoriaTxt;
 
-    private Zona zona;
+    //private Zona zona;
     private Cliente cliente;
     private TextView datosTraidos;
 
@@ -100,9 +97,12 @@ public class DatosClienteFragment extends Fragment {
     //String documentId= db.collection("clientes").document().getId();
     protected Spinner categorias;
 
+    private ProgressDialog dialog;
+
+    //private Geocoder geocoder;
+
 
     public DatosClienteFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -116,7 +116,7 @@ public class DatosClienteFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_datos, container, false);
 
-        //campos del form en xml
+        // CAMPOS DEL FORMULARIO
         nombreEd = (EditText) view.findViewById(R.id.ed_nombre_comercio);
         descripcionEd = (EditText) view.findViewById(R.id.ed_descripcion_comercio);
         direccionEd = (EditText) view.findViewById(R.id.ed_direccion_comercio);
@@ -131,7 +131,7 @@ public class DatosClienteFragment extends Fragment {
         fotodeContacto = (ImageView) view.findViewById(R.id.imagen_contacto_comercio);
         datosTraidos = (TextView) view.findViewById(R.id.datos_comercio);
 
-        //botones del form
+        // BOTONES DE FORMULARIO
         btnCargar = (Button) view.findViewById(R.id.btn_cargar_datos_comercio);
         btnTraer = (Button) view.findViewById(R.id.btn_traer_datos_comercio);
         btnCargarFoto = (Button) view.findViewById(R.id.btn_cargarFoto_comercio);
@@ -141,18 +141,20 @@ public class DatosClienteFragment extends Fragment {
             btnCargarFoto.setEnabled(false);
         }
 
-        //para tomar foto de galeria
+        dialog = new ProgressDialog(getActivity());
+
+       /* // TOMAR FOTO DE GALERIA
         imagePicker = new ImagePicker(DatosClienteFragment.this);
-        imagePicker.setQuality(100);
-        imagePicker.ensureMaxSize(400,400);
+        //imagePicker.setQuality(100);
+        //imagePicker.ensureMaxSize(400, 400);
         imagePicker.setImagePickerCallback(new ImagePickerCallback() {
             @Override
             public void onImagesChosen(List<ChosenImage> list) {
-                if (!list.isEmpty()) {
-                    String path = list.get(0).getOriginalPath();
-                    fotoPerfilUri = Uri.parse(path);
-                    fotodeContacto.setImageURI(fotoPerfilUri);
-                }
+                //if (!list.isEmpty()) {
+                path = list.get(0).getOriginalPath();
+                fotoPerfilUri = Uri.parse(path);
+                fotodeContacto.setImageURI(fotoPerfilUri);
+                // }
             }
 
             @Override
@@ -161,17 +163,19 @@ public class DatosClienteFragment extends Fragment {
             }
         });
 
-        // para tomar foto de camara
+        // TOMAR FOTO DE CAMARA
         cameraPicker = new CameraImagePicker(DatosClienteFragment.this);
-        cameraPicker.setCacheLocation(CacheLocation.EXTERNAL_STORAGE_APP_DIR);
-        cameraPicker.setQuality(100);
-        cameraPicker.ensureMaxSize(400,400);
+        cameraPicker.setCacheLocation(CacheLocation.EXTERNAL_STORAGE_PUBLIC_DIR);
+        //cameraPicker.setQuality(100);
+        //cameraPicker.ensureMaxSize(400, 400);
         cameraPicker.setImagePickerCallback(new ImagePickerCallback() {
             @Override
             public void onImagesChosen(List<ChosenImage> list) {
-                String path = list.get(0).getOriginalPath();
-                fotoPerfilUri = Uri.fromFile(new File(path));
-                fotodeContacto.setImageURI(fotoPerfilUri);
+                //if (!list.isEmpty()) {
+                path = list.get(0).getOriginalPath();
+                Uri uri = Uri.fromFile(new File(path));
+                fotodeContacto.setImageURI(uri);
+                //}
             }
 
             @Override
@@ -179,8 +183,9 @@ public class DatosClienteFragment extends Fragment {
                 Toast.makeText(getContext(), "Error: " + s, Toast.LENGTH_SHORT).show();
             }
         });
+*/
 
-        //logica del spinner
+        // LOGICA DEL SPINNER
         ArrayAdapter<CharSequence> adapterSpinCAtegorias = ArrayAdapter.createFromResource(getActivity(),
                 R.array.combo_categorias, android.R.layout.simple_spinner_item);
 
@@ -198,11 +203,11 @@ public class DatosClienteFragment extends Fragment {
             }
         });
 
+// LOGICA DEL BOTON CARGAR DATOS
         btnCargar.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-
 
                 String nombreTxt = nombreEd.getText().toString().trim();
                 String descripcionTxt = descripcionEd.getText().toString().trim();
@@ -214,14 +219,12 @@ public class DatosClienteFragment extends Fragment {
                 String telefonoTxt = telefonoEd.getText().toString().trim();
                 String mailTxt = mailEd.getText().toString().trim();
 
-                cliente = new Cliente(nombreTxt, categoriaTxt, direccionTxt);
-
+                cliente = new Cliente(nombreTxt, direccionTxt, telefonoTxt);
 
                 if (nombreTxt.isEmpty() || direccionTxt.isEmpty() || telefonoTxt.isEmpty()) {
 
                     Toast.makeText(getActivity(), "debe completar los campos obligatorios", Toast.LENGTH_LONG).show();
                 }
-
 
                 datosACargar.put(Constantes.NOMBRE, nombreTxt);
                 datosACargar.put(Constantes.DESCRIPCION, descripcionTxt);
@@ -233,7 +236,7 @@ public class DatosClienteFragment extends Fragment {
                 datosACargar.put(Constantes.PAIS, paisTxt);
                 datosACargar.put(Constantes.TELEFONO, telefonoTxt);
                 datosACargar.put(Constantes.MAIL, mailTxt);
-                //datosACargar.put(Constantes.FOTO, fotoPerfilUri.toString());
+                // datosACargar.put(Constantes.FOTO, fotoPerfilUri.getLastPathSegment());
 
 
                 db.collection("clientes").add(datosACargar).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -252,9 +255,7 @@ public class DatosClienteFragment extends Fragment {
         });
 
 
-        btnTraer.setOnClickListener(new View.OnClickListener()
-
-        {
+        btnTraer.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -302,9 +303,7 @@ public class DatosClienteFragment extends Fragment {
 
         });
 
-        btnCargarFoto.setOnClickListener(new View.OnClickListener()
-
-        {
+        btnCargarFoto.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -314,6 +313,188 @@ public class DatosClienteFragment extends Fragment {
 
         return view;
     }
+
+    private void seleccionarFoto() {
+        final CharSequence[] option = {"Tomar foto", "Abrir Galería", "Cancelar"};
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Eleige una opción");
+        builder.setItems(option, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                switch (i) {
+                    case 0://"Tomar foto"
+                        openCamera();
+                        //pickerPath = cameraPicker.pickImage();
+
+                        break;
+                    case 1: //"Abrir Galeriía"
+                        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        intent.setType("image/*");
+                        startActivityForResult(intent.createChooser(intent, "Abrir con..."), Constantes.COD_GALERIA);
+                        //imagePicker.pickImage();
+
+                }
+            }
+        });
+
+        builder.show();
+    }
+
+    private void openCamera() {
+        File file = new File(Environment.getExternalStorageDirectory(), RUTA_IMAGEN);
+        boolean isDirectoryCreated = file.exists();
+
+        if (!isDirectoryCreated)
+            isDirectoryCreated = file.mkdirs();
+
+        if (isDirectoryCreated) {
+            Long timestamp = System.currentTimeMillis() / 1000;
+            String imageName = timestamp.toString() + ".jpg";
+
+            path = Environment.getExternalStorageDirectory() + File.separator + RUTA_IMAGEN
+                    + File.separator + imageName;
+
+            File newFile = new File(path);
+            fotoPerfilUri = Uri.fromFile(newFile);
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, fotoPerfilUri);
+            startActivityForResult(intent, Constantes.COD_CAMARA);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("file_path"/*"pickerPath"*/, path);
+    }
+
+   /* @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        path = savedInstanceState.getString("file_path");
+    }
+*/
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey("file_path")) {
+                path = savedInstanceState.getString("file_path");
+            }
+        }
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case Constantes.COD_CAMARA:
+                    MediaScannerConnection.scanFile(getActivity(),
+                            new String[]{path}, null,
+                            new MediaScannerConnection.OnScanCompletedListener() {
+                                @Override
+                                public void onScanCompleted(String path, Uri uri) {
+                                    Log.i("ExternalStorage", "Scanned " + path + ":");
+                                    Log.i("ExternalStorage", "-> Uri = " + uri);
+
+                                    //Bitmap bitmap = BitmapFactory.decodeFile(path);
+                                    //fotodeContacto.setImageBitmap(bitmap);
+                                    //redimensionarImagen(bitmap, 400, 400);
+                                    //convertirDeBitmapUri(getActivity(),bitmap);
+                                    fotoPerfilUri = Uri.parse(path);
+                                    fotodeContacto.setImageURI(fotoPerfilUri);
+                                }
+                            });
+                    //subirAStorageUri(fotoPerfilUri);
+                    break;
+
+                case Constantes.COD_GALERIA:
+                    fotoPerfilUri = data.getData();
+                    fotodeContacto.setImageURI(fotoPerfilUri);
+                    //subirAStorageUri(fotoPerfilUri);
+                    break;
+
+            }subirAStorageUri(fotoPerfilUri);
+
+       /*if(resultCode==RESULT_OK){
+           switch (requestCode){
+               case Picker.PICK_IMAGE_CAMERA:
+                   cameraPicker.reinitialize(pickerPath);
+                   cameraPicker.submit(data);
+                   break;
+               case Picker.PICK_IMAGE_DEVICE:
+                   imagePicker.submit(data);
+                   fotoPerfilUri = data.getData();
+           }
+            subirAStorageUri(fotoPerfilUri);*/
+        }
+    }
+
+
+
+    public void subirAStorageUri(Uri uri) {
+
+        if (uri == null) {
+            Toast.makeText(getContext(), "No es posible cargar esta imagen", Toast.LENGTH_SHORT).show();
+
+
+        } else if (uri != null) {
+
+            String nombreFoto = "";
+            Date date = new Date();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy-hh-mm-ss", Locale.getDefault());
+            nombreFoto = simpleDateFormat.format(date);
+            final StorageReference storageRef = storage.child("fotos/").child("datos" + nombreFoto);
+            storageRef.putFile(uri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+                    return storageRef.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    Toast.makeText(getContext(), "uri no es nulo" + task, Toast.LENGTH_SHORT).show();
+                    if (task.isSuccessful()) {
+
+                        Uri urifoto = task.getResult();
+
+
+                        datosACargar.put(Constantes.FOTO, urifoto.toString());
+                        Toast.makeText(getContext(), "sube al storage y al firestore exitosamente" + task, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+    }
+
+
+    // LOGICA DE CONVERTIR DIRECCION A LATLNG
+   /* public void getLocationFromAddress(String strAddress) {
+
+        List<Address> address;
+
+        try {
+            address = geocoder.getFromLocationName(strAddress, 1);
+            Address dirInicial = address.get(0);
+            double latitud = dirInicial.getLatitude();
+            double longitud = dirInicial.getLongitude();
+            datosACargar.put("coordenadas", latitud + longitud);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    //TODO: ver si Latlng es una clase de java o no.*/
 
     private boolean validaPermisos() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
@@ -332,7 +513,8 @@ public class DatosClienteFragment extends Fragment {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 100) {
             if (grantResults.length == 2 && grantResults[0] == PackageManager.PERMISSION_GRANTED
@@ -384,92 +566,6 @@ public class DatosClienteFragment extends Fragment {
         dialogo.show();
     }
 
-    public void seleccionarFoto() {
-
-        final CharSequence[] OPCIONES_CARGAR_FOTO = {"Tomar Foto", "Abrir Galeria", "Cancelar"};
-        final AlertDialog.Builder alertOPCIONES = new AlertDialog.Builder(getActivity());
-        alertOPCIONES.setTitle("Seleccione una Opcion");
-        alertOPCIONES.setItems(OPCIONES_CARGAR_FOTO, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int i) {
-
-                switch (i) {
-
-                    case 0: //hizo click en camara
-                        pickerPath = cameraPicker.pickImage();
-                        break;
-                    case 1: // hizo click en galeria
-                        imagePicker.pickImage();
-                        break;
-                }
-            }
-        });
-        alertOPCIONES.show();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, final Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == Picker.PICK_IMAGE_CAMERA && resultCode == RESULT_OK) {
-            cameraPicker.reinitialize(pickerPath);
-            cameraPicker.submit(data);
-            subirAStorageUri(fotoPerfilUri);
-
-            // TODO: 11/16/2018 revisar porque la foto tomada primera la presenta como nula.
-            // la primer foto ejecuta el toast"No es posible cargar esta imagen"
-
-        } else {
-            if (requestCode == Picker.PICK_IMAGE_DEVICE && resultCode == RESULT_OK) {
-                imagePicker.submit(data);
-                fotoPerfilUri=data.getData();
-                subirAStorageUri(fotoPerfilUri);
-            }
-        }
-    }
-
-
-    public void subirAStorageUri(Uri uri) {
-
-        if (uri==null) {
-            Toast.makeText(getContext(), "No es posible cargar esta imagen", Toast.LENGTH_SHORT).show();
-
-
-        } else if (uri != null) {
-
-            String nombreFoto = "";
-            Date date = new Date();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy-hh-mm-ss", Locale.getDefault());
-            nombreFoto = simpleDateFormat.format(date);
-            final StorageReference storageRef = storage.child("fotos").child("datos" + nombreFoto);
-            storageRef.putFile(uri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-
-                @Override
-                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-
-
-                    if (!task.isSuccessful()) {
-                        throw task.getException();
-                    }
-                    return storageRef.getDownloadUrl();
-                }
-            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    Toast.makeText(getContext(), "uri no es nulo" + task, Toast.LENGTH_SHORT).show();
-                    if (task.isSuccessful()) {
-
-                        Uri urifoto = task.getResult();
-
-
-                        datosACargar.put(Constantes.FOTO, urifoto.toString());
-                        Toast.makeText(getContext(), "sube al storage y la url al firebase exitosamente" + task, Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-        }
-    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -501,21 +597,30 @@ public class DatosClienteFragment extends Fragment {
 
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        // You have to save path in case your activity is killed.
-        // In such a scenario, you will need to re-initialize the CameraImagePicker
-        outState.putString("picker_path", pickerPath);
-        super.onSaveInstanceState(outState);
+     /*public Uri convertirDeBitmapUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey("picker_path")) {
-                pickerPath = savedInstanceState.getString("picker_path");
-            }
+    private Bitmap redimensionarImagen(Bitmap bitmap, float anchoNuevo, float altoNuevo) {
+
+        int ancho = bitmap.getWidth();
+        int alto = bitmap.getHeight();
+
+        if (ancho > anchoNuevo || alto > altoNuevo) {
+            float escalaAncho = anchoNuevo / ancho;
+            float escalaAlto = altoNuevo / alto;
+
+            Matrix matrix = new Matrix();
+            matrix.postScale(escalaAncho, escalaAlto);
+
+            return Bitmap.createBitmap(bitmap, 0, 0, ancho, alto, matrix, false);
+
+        } else {
+            return bitmap;
         }
     }
+*/
 }
