@@ -7,11 +7,14 @@ package com.example.pilasnotebook.mapasdelnortedigital.view.fragment;
 
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.location.Address;
+import android.location.Geocoder;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
@@ -37,6 +40,7 @@ import android.widget.Toast;
 import com.example.pilasnotebook.mapasdelnortedigital.R;
 import com.example.pilasnotebook.mapasdelnortedigital.model.POJO.Cliente;
 import com.example.pilasnotebook.mapasdelnortedigital.utils.Constantes;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -49,13 +53,14 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.kbeanie.multipicker.api.CameraImagePicker;
-import com.kbeanie.multipicker.api.ImagePicker;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -91,15 +96,9 @@ public class DatosClienteFragment extends Fragment {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private StorageReference storage = FirebaseStorage.getInstance().getReference();
 
-    private ImagePicker imagePicker;
-    private CameraImagePicker cameraPicker;
-    private String pickerPath;
-    //String documentId= db.collection("clientes").document().getId();
     protected Spinner categorias;
-
-    private ProgressDialog dialog;
-
-    //private Geocoder geocoder;
+    private Geocoder geocoder;
+    private LatLng coordenadas;
 
 
     public DatosClienteFragment() {
@@ -127,6 +126,9 @@ public class DatosClienteFragment extends Fragment {
         telefonoEd = (EditText) view.findViewById(R.id.ed_telefono_comercio);
         mailEd = (EditText) view.findViewById(R.id.ed_mail_comercio);
 
+        //GEOCODE DIR A LATLNG
+        geocoder = new Geocoder(getActivity(), Constantes.LOCALE_ARGENTINA);
+
         categorias = (Spinner) view.findViewById(R.id.spinn_categorias_comercio);
         fotodeContacto = (ImageView) view.findViewById(R.id.imagen_contacto_comercio);
         datosTraidos = (TextView) view.findViewById(R.id.datos_comercio);
@@ -140,50 +142,6 @@ public class DatosClienteFragment extends Fragment {
         } else {
             btnCargarFoto.setEnabled(false);
         }
-
-        dialog = new ProgressDialog(getActivity());
-
-       /* // TOMAR FOTO DE GALERIA
-        imagePicker = new ImagePicker(DatosClienteFragment.this);
-        //imagePicker.setQuality(100);
-        //imagePicker.ensureMaxSize(400, 400);
-        imagePicker.setImagePickerCallback(new ImagePickerCallback() {
-            @Override
-            public void onImagesChosen(List<ChosenImage> list) {
-                //if (!list.isEmpty()) {
-                path = list.get(0).getOriginalPath();
-                fotoPerfilUri = Uri.parse(path);
-                fotodeContacto.setImageURI(fotoPerfilUri);
-                // }
-            }
-
-            @Override
-            public void onError(String s) {
-                Toast.makeText(getContext(), "Error: " + s, Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // TOMAR FOTO DE CAMARA
-        cameraPicker = new CameraImagePicker(DatosClienteFragment.this);
-        cameraPicker.setCacheLocation(CacheLocation.EXTERNAL_STORAGE_PUBLIC_DIR);
-        //cameraPicker.setQuality(100);
-        //cameraPicker.ensureMaxSize(400, 400);
-        cameraPicker.setImagePickerCallback(new ImagePickerCallback() {
-            @Override
-            public void onImagesChosen(List<ChosenImage> list) {
-                //if (!list.isEmpty()) {
-                path = list.get(0).getOriginalPath();
-                Uri uri = Uri.fromFile(new File(path));
-                fotodeContacto.setImageURI(uri);
-                //}
-            }
-
-            @Override
-            public void onError(String s) {
-                Toast.makeText(getContext(), "Error: " + s, Toast.LENGTH_SHORT).show();
-            }
-        });
-*/
 
         // LOGICA DEL SPINNER
         ArrayAdapter<CharSequence> adapterSpinCAtegorias = ArrayAdapter.createFromResource(getActivity(),
@@ -219,12 +177,15 @@ public class DatosClienteFragment extends Fragment {
                 String telefonoTxt = telefonoEd.getText().toString().trim();
                 String mailTxt = mailEd.getText().toString().trim();
 
-                cliente = new Cliente(nombreTxt, direccionTxt, telefonoTxt);
+                getLocationFromAddress(direccionTxt + ", " + localidadTxt + ", " + provinciaTxt + ", " + paisTxt);
 
-                if (nombreTxt.isEmpty() || direccionTxt.isEmpty() || telefonoTxt.isEmpty()) {
+                cliente = new Cliente(nombreTxt, categoriaTxt, direccionTxt);
+
+                if (nombreTxt.isEmpty() || direccionTxt.isEmpty() || categoriaTxt.isEmpty()) {
 
                     Toast.makeText(getActivity(), "debe completar los campos obligatorios", Toast.LENGTH_LONG).show();
                 }
+
 
                 datosACargar.put(Constantes.NOMBRE, nombreTxt);
                 datosACargar.put(Constantes.DESCRIPCION, descripcionTxt);
@@ -250,7 +211,6 @@ public class DatosClienteFragment extends Fragment {
                         Log.w(TAG, "Error adding document", e);
                     }
                 });
-
             }
         });
 
@@ -368,14 +328,6 @@ public class DatosClienteFragment extends Fragment {
         outState.putString("file_path"/*"pickerPath"*/, path);
     }
 
-   /* @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-        path = savedInstanceState.getString("file_path");
-    }
-*/
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -385,7 +337,6 @@ public class DatosClienteFragment extends Fragment {
             }
         }
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -402,15 +353,16 @@ public class DatosClienteFragment extends Fragment {
                                     Log.i("ExternalStorage", "Scanned " + path + ":");
                                     Log.i("ExternalStorage", "-> Uri = " + uri);
 
-                                    //Bitmap bitmap = BitmapFactory.decodeFile(path);
-                                    //fotodeContacto.setImageBitmap(bitmap);
-                                    //redimensionarImagen(bitmap, 400, 400);
-                                    //convertirDeBitmapUri(getActivity(),bitmap);
+                                    /*Bitmap bitmap = BitmapFactory.decodeFile(path);
+                                    fotodeContacto.setImageBitmap(bitmap);
+                                    redimensionarImagenMaximo(bitmap, 400, 400);
+                                    fotoPerfilUri= convertirDeBitmapUri(getActivity(),bitmap);*/
                                     fotoPerfilUri = Uri.parse(path);
                                     fotodeContacto.setImageURI(fotoPerfilUri);
+
                                 }
                             });
-                    //subirAStorageUri(fotoPerfilUri);
+
                     break;
 
                 case Constantes.COD_GALERIA:
@@ -419,23 +371,10 @@ public class DatosClienteFragment extends Fragment {
                     //subirAStorageUri(fotoPerfilUri);
                     break;
 
-            }subirAStorageUri(fotoPerfilUri);
-
-       /*if(resultCode==RESULT_OK){
-           switch (requestCode){
-               case Picker.PICK_IMAGE_CAMERA:
-                   cameraPicker.reinitialize(pickerPath);
-                   cameraPicker.submit(data);
-                   break;
-               case Picker.PICK_IMAGE_DEVICE:
-                   imagePicker.submit(data);
-                   fotoPerfilUri = data.getData();
-           }
-            subirAStorageUri(fotoPerfilUri);*/
+            }
+            subirAStorageUri(fotoPerfilUri);
         }
     }
-
-
 
     public void subirAStorageUri(Uri uri) {
 
@@ -478,21 +417,26 @@ public class DatosClienteFragment extends Fragment {
         }
     }
 
-
     // LOGICA DE CONVERTIR DIRECCION A LATLNG
-   /* public void getLocationFromAddress(String strAddress) {
+    public void getLocationFromAddress(String direccion) {
 
         List<Address> address;
 
         try {
-            address = geocoder.getFromLocationName(strAddress, 1);
-            Address dirInicial = address.get(0);
-            double latitud = dirInicial.getLatitude();
-            double longitud = dirInicial.getLongitude();
-            datosACargar.put("coordenadas", latitud + longitud);
+            address = geocoder.getFromLocationName(direccion, 1);
+            Address direccionAConvertir = address.get(0);
+            double latitud = direccionAConvertir.getLatitude();
+            double longitud = direccionAConvertir.getLongitude();
+            coordenadas = new LatLng(latitud, longitud);
+            //String stringCoordenadas = coordenadas.toString();
+
+            datosACargar.put(Constantes.COORDENADAS, coordenadas.latitude+","+coordenadas.longitude);
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
     //TODO: ver si Latlng es una clase de java o no.*/
 
@@ -566,7 +510,6 @@ public class DatosClienteFragment extends Fragment {
         dialogo.show();
     }
 
-
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -597,30 +540,25 @@ public class DatosClienteFragment extends Fragment {
 
     }
 
-     /*public Uri convertirDeBitmapUri(Context inContext, Bitmap inImage) {
+    public Bitmap redimensionarImagenMaximo(Bitmap mBitmap, float newWidth, float newHeigth) {
+        //Redimensionamos
+        int width = mBitmap.getWidth();
+        int height = mBitmap.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeigth) / height;
+        // create a matrix for the manipulation
+        Matrix matrix = new Matrix();
+        // resize the bit map
+        matrix.postScale(scaleWidth, scaleHeight);
+        // recreate the new Bitmap
+        return Bitmap.createBitmap(mBitmap, 0, 0, width, height, matrix, false);
+    }
+
+    public Uri convertirDeBitmapUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
     }
 
-    private Bitmap redimensionarImagen(Bitmap bitmap, float anchoNuevo, float altoNuevo) {
-
-        int ancho = bitmap.getWidth();
-        int alto = bitmap.getHeight();
-
-        if (ancho > anchoNuevo || alto > altoNuevo) {
-            float escalaAncho = anchoNuevo / ancho;
-            float escalaAlto = altoNuevo / alto;
-
-            Matrix matrix = new Matrix();
-            matrix.postScale(escalaAncho, escalaAlto);
-
-            return Bitmap.createBitmap(bitmap, 0, 0, ancho, alto, matrix, false);
-
-        } else {
-            return bitmap;
-        }
-    }
-*/
 }

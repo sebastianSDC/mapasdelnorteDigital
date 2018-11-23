@@ -44,7 +44,7 @@
     <string name="action_settings">Settings</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
     <string name="mostrar_datos_cargados">Mostrar Datos Cargados</string>
     <string name="descripcion_cuponera">en que consiste este evento de cuponera</string>
     <string name="titulo">titulo</string>

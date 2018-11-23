@@ -4,18 +4,20 @@ import android.app.AlertDialog;
 
 import com.example.pilasnotebook.mapasdelnortedigital.view.fragment.DatosClienteFragment;
 
+import java.util.Locale;
+
+
 public final class Constantes {
 
     // constante universal
     public static final String TAG = "tag";
-    public static final String FOTOS_ROOT_STORAGE = "fotosperfil/";//para subir imagenes al storage
 
     public static final int COD_CAMARA =20;  //para abrir camara y tomar la foto
     public static final int COD_GALERIA =10; // para abrir galeria y seleccionar imagen.
 
-    public static final int MAX_ANCHO= 400;
-    public static final int MAX_ALTO= 400;
-
+    // constantes para ubicacion en mapa
+    public static final String COORDENADAS = "latlang";
+public static final Locale LOCALE_ARGENTINA = new Locale("es","ARG");
 
     //constantes admin cliente: datos
     public static final String NOMBRE = "nombre";
@@ -28,6 +30,7 @@ public final class Constantes {
     public static final String PAIS = "pais";
     public static final String TELEFONO = "telefono";
     public static final String MAIL = "mail";
+
 
     //constantes admin cliente: cuponera
     public static final String TIPO = "tipo";
