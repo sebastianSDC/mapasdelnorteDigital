@@ -1,5 +1,7 @@
 package com.example.pilasnotebook.mapasdelnortedigital.model.POJO;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class Zona {
 
     private String direccion;
@@ -7,6 +9,7 @@ public class Zona {
     private String provincia;
     private String pais;
     private Integer codigoPostal;
+    private LatLng latlang;
 
 
 
@@ -66,5 +69,13 @@ public class Zona {
 
     public void setCodigoPostal(Integer codigoPostal) {
         this.codigoPostal = codigoPostal;
+    }
+
+    public LatLng getLatlang() {
+        return latlang;
+    }
+
+    public void setLatlang(LatLng latlang) {
+        this.latlang = latlang;
     }
 }

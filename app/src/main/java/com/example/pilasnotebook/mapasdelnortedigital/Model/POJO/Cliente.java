@@ -3,6 +3,7 @@ package com.example.pilasnotebook.mapasdelnortedigital.model.POJO;
 
 import java.io.Serializable;
 import java.util.List;
+import com.google.android.gms.maps.model.LatLng;
 
 public class Cliente implements Serializable {
 
@@ -12,6 +13,7 @@ public class Cliente implements Serializable {
     private String foto;
     private Zona zona;
     private String telefono;
+    private LatLng latlang;
     private String mail;
     private String horarioDeAtencion, paginaWeb;
     private List<String> redes;

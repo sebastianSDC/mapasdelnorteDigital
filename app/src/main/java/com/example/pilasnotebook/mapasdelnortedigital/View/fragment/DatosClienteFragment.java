@@ -12,7 +12,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.location.Address;
 import android.location.Geocoder;
 import android.media.MediaScannerConnection;
@@ -31,6 +30,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -46,10 +46,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -67,6 +64,7 @@ import java.util.Map;
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.app.Activity.RESULT_OK;
+import static android.support.constraint.ConstraintSet.VISIBLE;
 import static android.support.v4.content.ContextCompat.checkSelfPermission;
 
 
@@ -89,13 +87,14 @@ public class DatosClienteFragment extends Fragment {
     private TextView datosTraidos;
 
     private EditText nombreEd, descripcionEd, direccionEd, localidadED,
-            codigoPostalEd, provinciaEd, paisEd, telefonoEd, mailEd;
+            codigoPostalEd, provinciaEd, paisEd, telefonoEd, mailEd, faceEd, instaEd, twitEd, watsapEd;
 
     protected ImageView fotodeContacto;
     private Button btnCargarFoto, btnCargar, btnTraer;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private StorageReference storage = FirebaseStorage.getInstance().getReference();
 
+    private CheckedTextView face, insta, twit, watsap;
     protected Spinner categorias;
     private Geocoder geocoder;
     private LatLng coordenadas;
@@ -125,18 +124,66 @@ public class DatosClienteFragment extends Fragment {
         paisEd = (EditText) view.findViewById(R.id.ed_pais_comercio);
         telefonoEd = (EditText) view.findViewById(R.id.ed_telefono_comercio);
         mailEd = (EditText) view.findViewById(R.id.ed_mail_comercio);
+        faceEd = view.findViewById(R.id.ed_facebook_comercio);
+        instaEd = view.findViewById(R.id.ed_instagram_comercio);
+        twitEd = view.findViewById(R.id.ed_twitter_comercio);
+        watsapEd = view.findViewById(R.id.ed_whatsapp_comercio);
+
+        // CAMPOS DE CHEQTEXTVIEW
+        face = view.findViewById(R.id.cheq_facebook);
+        insta = view.findViewById(R.id.cheq_instagram);
+        twit = view.findViewById(R.id.cheq_twitter);
+        watsap = view.findViewById(R.id.cheq_whatsapp);
+
+        // LOGICA DE LOS CHEQTEXTVIEW
+        face.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                faceEd.setVisibility(VISIBLE);
+                face.setPadding(16, 4, 16, 4);
+                face.setBackgroundResource(R.drawable.edit_text_borde);
+            }
+        });
+
+        insta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                instaEd.setVisibility(VISIBLE);
+                insta.setPadding(16, 4, 16, 4);
+                insta.setBackgroundResource(R.drawable.edit_text_borde);
+            }
+        });
+
+        twit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                twitEd.setVisibility(VISIBLE);
+                twit.setPadding(16, 4, 16, 4);
+                twit.setBackgroundResource(R.drawable.edit_text_borde);
+            }
+        });
+
+        watsap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                watsapEd.setVisibility(VISIBLE);
+                watsap.setPadding(8, 4, 8, 4);
+                watsap.setBackgroundResource(R.drawable.edit_text_borde);
+            }
+        });
+
 
         //GEOCODE DIR A LATLNG
         geocoder = new Geocoder(getActivity(), Constantes.LOCALE_ARGENTINA);
 
         categorias = (Spinner) view.findViewById(R.id.spinn_categorias_comercio);
         fotodeContacto = (ImageView) view.findViewById(R.id.imagen_contacto_comercio);
-        datosTraidos = (TextView) view.findViewById(R.id.datos_comercio);
+
 
         // BOTONES DE FORMULARIO
         btnCargar = (Button) view.findViewById(R.id.btn_cargar_datos_comercio);
-        btnTraer = (Button) view.findViewById(R.id.btn_traer_datos_comercio);
         btnCargarFoto = (Button) view.findViewById(R.id.btn_cargarFoto_comercio);
+
         if (validaPermisos()) {
             btnCargarFoto.setEnabled(true);
         } else {
@@ -146,9 +193,7 @@ public class DatosClienteFragment extends Fragment {
         // LOGICA DEL SPINNER
         ArrayAdapter<CharSequence> adapterSpinCAtegorias = ArrayAdapter.createFromResource(getActivity(),
                 R.array.combo_categorias, android.R.layout.simple_spinner_item);
-
         categorias.setAdapter(adapterSpinCAtegorias);
-
         categorias.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -157,9 +202,9 @@ public class DatosClienteFragment extends Fragment {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
+
 
 // LOGICA DEL BOTON CARGAR DATOS
         btnCargar.setOnClickListener(new View.OnClickListener() {
@@ -174,103 +219,64 @@ public class DatosClienteFragment extends Fragment {
                 String codPostTxt = codigoPostalEd.getText().toString().trim();
                 String provinciaTxt = provinciaEd.getText().toString().trim();
                 String paisTxt = paisEd.getText().toString().trim();
+
+                if (!direccionTxt.isEmpty() && !localidadTxt.isEmpty() && !provinciaTxt.isEmpty()
+                        && !paisTxt.isEmpty()) {
+                    getLocationFromAddress(direccionTxt + ", " + localidadTxt + ", " +
+                            provinciaTxt + ", " + paisTxt);
+                } else {
+                    Toast.makeText(getActivity(), "debe completar los datos de zona para generar el punto " +
+                            "en el mapa", Toast.LENGTH_LONG).show();
+                }
+
                 String telefonoTxt = telefonoEd.getText().toString().trim();
                 String mailTxt = mailEd.getText().toString().trim();
-
-                getLocationFromAddress(direccionTxt + ", " + localidadTxt + ", " + provinciaTxt + ", " + paisTxt);
-
-                cliente = new Cliente(nombreTxt, categoriaTxt, direccionTxt);
+                String faceTxt = faceEd.getText().toString().trim();
+                String instaTxt = instaEd.getText().toString().trim();
+                String twitTxt = twitEd.getText().toString().trim();
+                String watsapTxt = watsapEd.getText().toString().trim();
 
                 if (nombreTxt.isEmpty() || direccionTxt.isEmpty() || categoriaTxt.isEmpty()) {
 
                     Toast.makeText(getActivity(), "debe completar los campos obligatorios", Toast.LENGTH_LONG).show();
+                } else {
+                    datosACargar.put(Constantes.NOMBRE, nombreTxt);
+                    datosACargar.put(Constantes.DESCRIPCION, descripcionTxt);
+                    datosACargar.put(Constantes.CATEGORIA, categoriaTxt);
+                    datosACargar.put(Constantes.DIRECCION, direccionTxt);
+                    datosACargar.put(Constantes.LOCALIDAD, localidadTxt);
+                    datosACargar.put(Constantes.CODIGO_POSTAL, codPostTxt);
+                    datosACargar.put(Constantes.PROVINCIA, provinciaTxt);
+                    datosACargar.put(Constantes.PAIS, paisTxt);
+                    datosACargar.put(Constantes.TELEFONO, telefonoTxt);
+                    datosACargar.put(Constantes.MAIL, mailTxt);
+                    datosACargar.put(Constantes.FACEBOOK, faceTxt);
+                    datosACargar.put(Constantes.INSTAGRAM, instaTxt);
+                    datosACargar.put(Constantes.TWITTER, twitTxt);
+                    datosACargar.put(Constantes.WHATSAPP, watsapTxt);
                 }
 
-
-                datosACargar.put(Constantes.NOMBRE, nombreTxt);
-                datosACargar.put(Constantes.DESCRIPCION, descripcionTxt);
-                datosACargar.put(Constantes.CATEGORIA, categoriaTxt);
-                datosACargar.put(Constantes.DIRECCION, direccionTxt);
-                datosACargar.put(Constantes.LOCALIDAD, localidadTxt);
-                datosACargar.put(Constantes.CODIGO_POSTAL, codPostTxt);
-                datosACargar.put(Constantes.PROVINCIA, provinciaTxt);
-                datosACargar.put(Constantes.PAIS, paisTxt);
-                datosACargar.put(Constantes.TELEFONO, telefonoTxt);
-                datosACargar.put(Constantes.MAIL, mailTxt);
-                // datosACargar.put(Constantes.FOTO, fotoPerfilUri.getLastPathSegment());
-
-
-                db.collection("clientes").add(datosACargar).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                db.collection("clientes").document("prueba").set(datosACargar).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully written!");
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
+                        Log.w(TAG, "Error writing document", e);
                     }
                 });
             }
         });
 
-
-        btnTraer.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                db.collection("clientes").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d(TAG, document.getId() + " => " + document.getData());
-                                String nombreTxt = document.getString(Constantes.NOMBRE);
-                                String descripcionTxt = document.getString(Constantes.DESCRIPCION);
-                                String categoriaTxt = document.getString(Constantes.CATEGORIA);
-                                String direccionTxt = document.getString(Constantes.DIRECCION);
-                                String localidadTxt = document.getString(Constantes.LOCALIDAD);
-                                String codPostTxt = document.getString(Constantes.CODIGO_POSTAL);
-                                String provinciaTxt = document.getString(Constantes.PROVINCIA);
-                                String paisTxt = document.getString(Constantes.PAIS);
-                                String telefonoTxt = document.getString(Constantes.TELEFONO);
-                                String mailTxt = document.getString(Constantes.MAIL);
-                                String fotoTxt = document.getString(Constantes.FOTO);
-
-                                datosTraidos.setText("DATOS CARGADOS : " + "\n" +
-                                        "Foto:  " + fotoTxt + "\n"
-                                        + nombreTxt + "\n"
-                                        + descripcionTxt + "\n"
-                                        + categoriaTxt + "   \n     "
-                                        + direccionTxt + "   \n     "
-                                        + localidadTxt + "   \n   "
-                                        + codPostTxt + "   \n   "
-                                        + provinciaTxt + "   \n   "
-                                        + paisTxt + "   \n   "
-                                        + telefonoTxt + "   \n   "
-                                        + mailTxt);
-
-                            }
-                        } else {
-                            Log.w(TAG, "Error getting documents.", task.getException());
-                        }
-                    }
-                });
-
-            }
-
-
-        });
-
-        btnCargarFoto.setOnClickListener(new View.OnClickListener() {
-
+// LOGICA DEL BOTON CARGAR FOTOS
+        btnCargarFoto.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 seleccionarFoto();
             }
         });
-
         return view;
     }
 
@@ -285,18 +291,15 @@ public class DatosClienteFragment extends Fragment {
                     case 0://"Tomar foto"
                         openCamera();
                         //pickerPath = cameraPicker.pickImage();
-
                         break;
                     case 1: //"Abrir Galeriía"
                         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                         intent.setType("image/*");
                         startActivityForResult(intent.createChooser(intent, "Abrir con..."), Constantes.COD_GALERIA);
                         //imagePicker.pickImage();
-
                 }
             }
         });
-
         builder.show();
     }
 
@@ -430,7 +433,7 @@ public class DatosClienteFragment extends Fragment {
             coordenadas = new LatLng(latitud, longitud);
             //String stringCoordenadas = coordenadas.toString();
 
-            datosACargar.put(Constantes.COORDENADAS, coordenadas.latitude+","+coordenadas.longitude);
+            datosACargar.put(Constantes.COORDENADAS, coordenadas.latitude + "," + coordenadas.longitude);
 
 
         } catch (IOException e) {
@@ -438,7 +441,6 @@ public class DatosClienteFragment extends Fragment {
         }
 
     }
-    //TODO: ver si Latlng es una clase de java o no.*/
 
     private boolean validaPermisos() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
@@ -537,21 +539,6 @@ public class DatosClienteFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
-
-    }
-
-    public Bitmap redimensionarImagenMaximo(Bitmap mBitmap, float newWidth, float newHeigth) {
-        //Redimensionamos
-        int width = mBitmap.getWidth();
-        int height = mBitmap.getHeight();
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeigth) / height;
-        // create a matrix for the manipulation
-        Matrix matrix = new Matrix();
-        // resize the bit map
-        matrix.postScale(scaleWidth, scaleHeight);
-        // recreate the new Bitmap
-        return Bitmap.createBitmap(mBitmap, 0, 0, width, height, matrix, false);
     }
 
     public Uri convertirDeBitmapUri(Context inContext, Bitmap inImage) {
@@ -560,5 +547,4 @@ public class DatosClienteFragment extends Fragment {
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
     }
-
 }

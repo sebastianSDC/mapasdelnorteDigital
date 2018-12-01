@@ -9,15 +9,12 @@
     android:orientation="vertical"
     tools:context=".view.fragment.DatosClienteFragment">
 
-
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
-        tools:targetApi="o"
-        tools:ignore="UselessParent">
-
+        tools:ignore="UselessParent"
+        tools:targetApi="o">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,23 +23,13 @@
 
             <TextView
                 android:id="@+id/txv_datos_comercio"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/titulos_form"
                 android:layout_marginTop="16dp"
-                android:fontFamily="@font/montserrat"
-                android:text="@string/texto_inicio_form"
-                android:textAllCaps="true"
-                android:textColor="@color/colorNegro"
-                android:textSize="12sp" />
-
+                android:text="@string/texto_inicio_form" />
 
             <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp"
-                android:backgroundTint="@color/colorBlanco"
-                android:elevation="16dp"
+                style="@style/cardview_form"
+                android:layout_marginTop="8dp"
                 app:cardCornerRadius="10dp">
 
                 <LinearLayout
@@ -53,58 +40,27 @@
 
                     <TextView
                         android:id="@+id/nombre_comercio"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="4dp"
-                        android:fontFamily="@font/montserrat"
-                        android:text="@string/nombre_local"
-                        android:textAllCaps="true"
-                        android:textColor="@color/colorNegro"
-                        android:textSize="12sp" />
+                        style="@style/titulos_form"
+                        android:text="@string/nombre_local" />
 
                     <EditText
                         android:id="@+id/ed_nombre_comercio"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:background="@drawable/edit_text_borde"
-                        android:fontFamily="@font/montserrat"
+                        style="@style/edittext_form"
                         android:hint="@string/hint_nombre"
-                        android:autofillHints="**dato obligatorio**"
-                        tools:targetApi="o"
-                        android:inputType="textCapWords"
-                        android:padding="8dp"
-                        android:text=""
-                        android:textSize="12sp" />
+                        android:inputType="textCapWords" />
 
                     <TextView
                         android:id="@+id/descripcion_comercio"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="4dp"
-                        android:fontFamily="@font/montserrat"
-                        android:text="@string/descripcion"
-                        android:textAllCaps="true"
-                        android:textColor="@color/colorNegro"
-                        android:textSize="12sp" />
+                        style="@style/titulos_form"
+                        android:text="@string/descripcion" />
 
                     <EditText
                         android:id="@+id/ed_descripcion_comercio"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:background="@drawable/edit_text_borde"
-                        android:fontFamily="@font/montserrat"
+                        style="@style/edittext_form"
                         android:hint="@string/hint_descripcion"
-                        android:autofillHints="**dato obligatorio**"
-                        tools:targetApi="o"
                         android:inputType="textCapSentences"
                         android:maxLines="7"
-                        android:padding="8dp"
-                        android:text=""
-                        android:textSize="12sp"
                         tools:text="@tools:sample/lorem/random" />
-
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -112,14 +68,8 @@
 
                         <TextView
                             android:id="@+id/categoria_comercio"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="4dp"
-                            android:fontFamily="@font/montserrat"
-                            android:text="@string/Categoria"
-                            android:textAllCaps="true"
-                            android:textColor="@color/colorNegro"
-                            android:textSize="12sp" />
+                            style="@style/titulos_form"
+                            android:text="@string/Categoria" />
 
                         <Spinner
                             android:id="@+id/spinn_categorias_comercio"
@@ -130,57 +80,42 @@
 
                         <TextView
                             android:id="@+id/foto_contacto_comercio"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            style="@style/titulos_form"
                             android:layout_alignBaseline="@id/categoria_comercio"
                             android:layout_alignStart="@id/btn_cargarFoto_comercio"
-                            android:fontFamily="@font/montserrat"
-                            android:text="@string/foto"
-                            android:textAllCaps="true"
-                            android:textColor="@color/colorNegro"
-                            android:textSize="12sp" />
-
+                            android:layout_marginBottom="0dp"
+                            android:text="@string/foto" />
 
                         <Button
                             android:id="@+id/btn_cargarFoto_comercio"
-                            android:layout_width="match_parent"
+                            style="@style/boton_standard"
                             android:layout_height="24dp"
-                            android:layout_below="@+id/foto_contacto_comercio"
                             android:layout_alignWithParentIfMissing="true"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginTop="2dp"
-                            android:layout_toEndOf="@id/spinn_categorias_comercio"
+                            android:layout_below="@+id/foto_contacto_comercio"
+                            android:layout_marginStart="11dp"
+                            android:layout_marginTop="1dp"
+                            android:layout_marginEnd="5dp"
                             android:layout_toStartOf="@id/imagen_contacto_comercio"
-                            android:background="@drawable/edit_text_borde"
-                            android:backgroundTint="@color/colorAccent"
-                            android:fontFamily="@font/montserrat"
-                            android:text="@string/cargar_foto"
-                            android:textColor="@color/colorBlanco"
-                            android:textSize="11sp"
-                            tools:ignore="SmallSp" />
+                            android:layout_toEndOf="@id/spinn_categorias_comercio"
+                            android:text="@string/cargar_foto" />
 
                         <ImageView
                             android:id="@+id/imagen_contacto_comercio"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
-                            android:layout_marginTop="4dp"
-                            android:layout_marginStart="8dp"
                             android:layout_alignParentEnd="true"
-                            android:scaleType="centerCrop"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="4dp"
                             android:background="@drawable/edit_text_borde"
-                            android:contentDescription="@string/foto"/>
+                            android:contentDescription="@string/foto"
+                            android:scaleType="centerCrop" />
 
                     </RelativeLayout>
-
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:backgroundTint="@color/colorBlanco"
-                android:elevation="16dp"
+                style="@style/cardview_form"
                 app:cardCornerRadius="10dp">
 
                 <LinearLayout
@@ -196,14 +131,13 @@
                         android:orientation="horizontal"
                         tools:ignore="UseCompoundDrawables">
 
-
                         <ImageView
                             android:layout_width="30dp"
                             android:layout_height="30dp"
+                            android:contentDescription="@string/foto"
                             android:maxWidth="50dp"
                             android:maxHeight="50dp"
-                            android:src="@drawable/isotipo_marker_mapasdelnorte"
-                            android:contentDescription="@string/foto"/>
+                            android:src="@drawable/isotipo_marker_mapasdelnorte" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -217,39 +151,22 @@
 
                     </LinearLayout>
 
-
                     <TextView
                         android:id="@+id/direccion_comercio"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="4dp"
-                        android:fontFamily="@font/montserrat"
-                        android:text="@string/Direccion"
-                        android:textAllCaps="true"
-                        android:textColor="@color/colorNegro"
-                        android:textSize="12sp" />
-
+                        style="@style/titulos_form"
+                        android:text="@string/Direccion" />
 
                     <EditText
                         android:id="@+id/ed_direccion_comercio"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:background="@drawable/edit_text_borde"
-                        android:fontFamily="@font/montserrat"
+                        style="@style/edittext_form"
                         android:hint="@string/hint_direccion"
-                        android:autofillHints="**dato obligatorio**"
-                        tools:targetApi="o"
-                        android:inputType="textCapWords"
-                        android:padding="8dp"
-                        android:text=""
-                        android:textSize="12sp" />
+                        android:inputType="textCapWords" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:baselineAligned="false">
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -260,33 +177,15 @@
 
                             <TextView
                                 android:id="@+id/localidad_comercio"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="4dp"
-                                android:fontFamily="@font/montserrat"
-                                android:text="@string/localidad"
-                                android:textAllCaps="true"
-                                android:textColor="@color/colorNegro"
-                                android:textSize="12sp" />
-
+                                style="@style/titulos_form"
+                                android:text="@string/localidad" />
 
                             <EditText
                                 android:id="@+id/ed_localidad_comercio"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginBottom="8dp"
-                                android:background="@drawable/edit_text_borde"
-                                android:fontFamily="@font/montserrat"
+                                style="@style/edittext_form"
                                 android:hint="@string/hint_localidad"
-                                android:autofillHints="**dato obligatorio**"
-                                tools:targetApi="o"
-                                android:inputType="textCapWords"
-                                android:padding="8dp"
-                                android:text=""
-                                android:textSize="12sp" />
-
+                                android:inputType="textCapWords" />
                         </LinearLayout>
-
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -296,100 +195,46 @@
 
                             <TextView
                                 android:id="@+id/codigoPostal_comercio"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="4dp"
-                                android:fontFamily="@font/montserrat"
-                                android:text="@string/cod_postal"
-                                android:textAllCaps="true"
-                                android:textColor="@color/colorNegro"
-                                android:textSize="12sp" />
-
+                                style="@style/titulos_form"
+                                android:text="@string/cod_postal" />
 
                             <EditText
                                 android:id="@+id/ed_codigoPostal_comercio"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="8dp"
-                                android:background="@drawable/edit_text_borde"
-                                android:fontFamily="@font/montserrat"
+                                style="@style/edittext_form"
                                 android:hint="@string/hint_cp"
-                                android:autofillHints="opcional"
-                                tools:targetApi="o"
-                                android:inputType="number"
-                                android:padding="8dp"
-                                android:text=""
-                                android:textSize="12sp" />
+                                android:inputType="number" />
+
                         </LinearLayout>
-
                     </LinearLayout>
-
 
                     <TextView
                         android:id="@+id/provincia_comercio"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="4dp"
-                        android:fontFamily="@font/montserrat"
-                        android:text="@string/provincia"
-                        android:textAllCaps="true"
-                        android:textColor="@color/colorNegro"
-                        android:textSize="12sp" />
-
+                        style="@style/titulos_form"
+                        android:text="@string/provincia" />
 
                     <EditText
                         android:id="@+id/ed_provincia_comercio"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:background="@drawable/edit_text_borde"
-                        android:fontFamily="@font/montserrat"
+                        style="@style/edittext_form"
                         android:hint="@string/hint_provincia"
-                        android:autofillHints="**dato obligatorio**"
-                        tools:targetApi="o"
-                        android:inputType="textCapWords"
-                        android:padding="8dp"
-                        android:text=""
-                        android:textSize="12sp" />
+                        android:inputType="textCapWords" />
 
                     <TextView
                         android:id="@+id/pais_comercio"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="4dp"
-                        android:fontFamily="@font/montserrat"
-                        android:text="@string/pais"
-                        android:textAllCaps="true"
-                        android:textColor="@color/colorNegro"
-                        android:textSize="12sp" />
-
+                        style="@style/titulos_form"
+                        android:text="@string/pais" />
 
                     <EditText
                         android:id="@+id/ed_pais_comercio"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:background="@drawable/edit_text_borde"
-                        android:fontFamily="@font/montserrat"
+                        style="@style/edittext_form"
                         android:hint="@string/hint_pais"
-                        android:inputType="textCapCharacters"
-                        android:padding="8dp"
-                        android:text=""
-                        android:textSize="12sp"
-                        android:autofillHints="**dato obligatorio**"
-                        tools:targetApi="o" />
-
+                        android:inputType="textCapCharacters" />
 
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
                 android:id="@+id/card_datosDeContacto_Comercio"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:backgroundTint="@color/cardview_light_background"
-                android:elevation="16dp"
+                style="@style/cardview_form"
                 app:cardCornerRadius="10dp">
 
                 <LinearLayout
@@ -405,14 +250,13 @@
                         android:orientation="horizontal"
                         tools:ignore="UseCompoundDrawables">
 
-
                         <ImageView
                             android:layout_width="30dp"
                             android:layout_height="30dp"
+                            android:contentDescription="@string/foto"
                             android:maxWidth="50dp"
                             android:maxHeight="50dp"
-                            android:src="@drawable/isotipo_marker_mapasdelnorte"
-                            android:contentDescription="@string/foto"/>
+                            android:src="@drawable/isotipo_marker_mapasdelnorte" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -422,125 +266,121 @@
                             android:gravity="bottom"
                             android:text="@string/datos_de_contacto"
                             android:textAllCaps="true"
-                            android:textSize="12sp"/>
-                            <!--android:drawableStart="@drawable/isotipo_marker_mapasdelnorte"-->
+                            android:textSize="12sp" />
 
                     </LinearLayout>
 
                     <TextView
                         android:id="@+id/telefono_comercio"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="4dp"
-                        android:fontFamily="@font/montserrat"
-                        android:text="@string/telefono"
-                        android:textAllCaps="true"
-                        android:textColor="@color/colorNegro"
-                        android:textSize="12sp" />
-
+                        style="@style/titulos_form"
+                        android:text="@string/telefono" />
 
                     <EditText
                         android:id="@+id/ed_telefono_comercio"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:background="@drawable/edit_text_borde"
-                        android:fontFamily="@font/montserrat"
+                        style="@style/edittext_form"
                         android:hint="@string/hint_tel"
-                        android:autofillHints="**dato obligatorio**"
-                        tools:targetApi="o"
-                        android:inputType="phone"
-                        android:padding="8dp"
-                        android:text=""
-                        android:textSize="12sp" />
+                        android:inputType="phone" />
 
                     <TextView
                         android:id="@+id/mail_comercio"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="4dp"
-                        android:fontFamily="@font/montserrat"
-                        android:text="@string/mail"
-                        android:textAllCaps="true"
-                        android:textColor="@color/colorNegro"
-                        android:textSize="12sp" />
-
+                        style="@style/titulos_form"
+                        android:text="@string/mail" />
 
                     <EditText
                         android:id="@+id/ed_mail_comercio"
+                        style="@style/edittext_form"
+                        android:hint="@string/hint_mail"
+                        android:inputType="textEmailAddress" />
+
+                    <TextView
+                        android:id="@+id/redes_comercio"
+                        style="@style/titulos_form"
+                        android:text="@string/redes" />
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
-                        android:background="@drawable/edit_text_borde"
-                        android:fontFamily="@font/montserrat"
-                        android:hint="@string/hint_mail"
-                        android:autofillHints="**dato obligatorio**"
-                        tools:targetApi="o"
+                        android:orientation="horizontal">
+
+                        <CheckedTextView
+                            android:id="@+id/cheq_facebook"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="16dp"
+                            android:checked="false"
+                            android:text="Facebook" />
+
+                        <CheckedTextView
+                            android:id="@+id/cheq_instagram"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="16dp"
+                            android:checked="false"
+                            android:text="Instagram" />
+
+                        <CheckedTextView
+                            android:id="@+id/cheq_twitter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="16dp"
+                            android:checked="false"
+                            android:text="Twitter" />
+
+                        <CheckedTextView
+                            android:id="@+id/cheq_whatsapp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="16dp"
+                            android:checked="false"
+                            android:text="WhatsApp" />
+
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/ed_facebook_comercio"
+                        style="@style/edittext_form"
+                        android:hint="@string/hint_facebook"
                         android:inputType="textEmailAddress"
-                        android:padding="8dp"
-                        android:text=""
-                        android:textSize="12sp"
-                         />
+                        android:visibility="gone" />
+
+                    <EditText
+                        android:id="@+id/ed_instagram_comercio"
+                        style="@style/edittext_form"
+                        android:hint="@string/hint_instagram"
+                        android:inputType="textEmailAddress"
+                        android:visibility="gone" />
+
+                    <EditText
+                        android:id="@+id/ed_twitter_comercio"
+                        style="@style/edittext_form"
+                        android:hint="@string/hint_twitter"
+                        android:inputType="textEmailAddress"
+                        android:visibility="gone" />
+
+                    <EditText
+                        android:id="@+id/ed_whatsapp_comercio"
+                        style="@style/edittext_form"
+                        android:hint="@string/hint_whatsapp"
+                        android:inputType="textEmailAddress"
+                        android:visibility="gone" />
 
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
             <Button
                 android:id="@+id/btn_cargar_datos_comercio"
-                android:layout_width="match_parent"
+                style="@style/boton_standard"
                 android:layout_height="35dp"
-                android:layout_marginBottom="4dp"
-                android:background="@drawable/edit_text_borde"
-                android:backgroundTint="@color/colorAccent"
-                android:fontFamily="@font/montserrat"
+                android:layout_marginBottom="40dp"
                 android:maxHeight="50dp"
                 android:text="@string/cargar_datos"
-                android:textAlignment="center"
-                android:textColor="@color/colorCardCliente" />
-
-            <Button
-                android:id="@+id/btn_traer_datos_comercio"
+                android:textAlignment="center" />
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="35dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/edit_text_borde"
-                android:backgroundTint="@color/colorAccent"
-                android:fontFamily="@font/montserrat"
-                android:maxHeight="50dp"
-                android:text="@string/mostrar_datos_cargados"
-                android:textAlignment="center"
-                android:textColor="@color/colorBlanco" />
-
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:padding="8dp"
-                android:backgroundTint="@color/colorBlanco"
-                android:elevation="16dp"
-                app:cardCornerRadius="10dp">
-
-                <TextView
-                    android:id="@+id/datos_comercio"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginVertical="16dp"
-                    android:layout_marginHorizontal="8dp"
-                    android:fontFamily="@font/montserrat"
-                    android:maxLines="10"
-                    android:lineSpacingMultiplier="1.5"
-                    android:text=""
-                    android:textAlignment="center"
-                    android:textColor="@color/colorNegro"
-                    android:textSize="12sp"
-                    tools:text="@tools:sample/lorem/random"
-                    tools:targetApi="o" />
-            </android.support.v7.widget.CardView>
-
+                android:layout_height="2dp"
+                android:backgroundTint="@color/colorAccent"/>
 
         </LinearLayout>
     </ScrollView>
-
-
 </LinearLayout>

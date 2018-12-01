@@ -33,10 +33,10 @@ import com.example.pilasnotebook.mapasdelnortedigital.view.fragment.DatosCliente
 import com.example.pilasnotebook.mapasdelnortedigital.view.fragment.FotosClienteFragment;
 import com.example.pilasnotebook.mapasdelnortedigital.view.fragment.MapaClienteFragment;
 
-
-public class ViewPagerAdminActivity extends AppCompatActivity implements CarteleraClienteFragment.OnFragmentInteractionListener,CuponeraClienteFragment.OnFragmentInteractionListener,MapaClienteFragment.OnFragmentInteractionListener,FotosClienteFragment.OnFragmentInteractionListener,DatosClienteFragment.OnFragmentInteractionListener,CatalogoOnLineClienteFragment.OnFragmentInteractionListener {
+public class ViewPagerAdminActivity extends AppCompatActivity implements CarteleraClienteFragment.OnFragmentInteractionListener, CuponeraClienteFragment.OnFragmentInteractionListener, MapaClienteFragment.OnFragmentInteractionListener, FotosClienteFragment.OnFragmentInteractionListener, DatosClienteFragment.OnFragmentInteractionListener, CatalogoOnLineClienteFragment.OnFragmentInteractionListener {
 
     private PlaceholderFragment.SectionsPagerAdapter mSectionsPagerAdapter;
+    //private SectionsPagerAdapter mSectionsPagerAdapter;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -52,7 +52,8 @@ public class ViewPagerAdminActivity extends AppCompatActivity implements Cartele
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new PlaceholderFragment.SectionsPagerAdapter(getSupportFragmentManager());
+         mSectionsPagerAdapter = new PlaceholderFragment.SectionsPagerAdapter(getSupportFragmentManager());
+        //mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
@@ -105,17 +106,19 @@ public class ViewPagerAdminActivity extends AppCompatActivity implements Cartele
     /**
      * A placeholder fragment containing a simple view.
      */
+
     public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
+
+        /*
+         *The fragment argument representing the section number for this
+         *fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
 
         public PlaceholderFragment() {
         }
 
-        /**
+        /*
          * Returns a new instance of this fragment for the given section
          * number.
          */
@@ -142,17 +145,16 @@ public class ViewPagerAdminActivity extends AppCompatActivity implements Cartele
                 case 6:
                     fragment = new CatalogoOnLineClienteFragment();
                     break;
-
-
             }
             return fragment;
         }
 
         @Nullable
         @Override
-        public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                                 @Nullable Bundle savedInstanceState) {
             super.onCreateView(inflater, container, savedInstanceState);
-            View view =inflater.inflate(R.layout.activity_view_pager_admin, container, false);
+            View view = inflater.inflate(R.layout.activity_view_pager_admin, container, false);
 
             return view;
         }
@@ -167,7 +169,26 @@ public class ViewPagerAdminActivity extends AppCompatActivity implements Cartele
             public Fragment getItem(int position) {
                 return PlaceholderFragment.newInstance(position + 1);
 
+                /*Fragment fragment = null;
+
+                switch (position) {
+
+                    case 1:
+                        return new DatosClienteFragment();
+                    case 2:
+                        return new MapaClienteFragment();
+                    case 3:
+                        return new CuponeraClienteFragment();
+                    case 4:
+                        return new CarteleraClienteFragment();
+                    case 5:
+                        return new FotosClienteFragment();
+                    case 6:
+                        return new CatalogoOnLineClienteFragment();
+                }
+                return fragment;*/
             }
+
 
             @Override
             public int getCount() {
@@ -193,9 +214,6 @@ public class ViewPagerAdminActivity extends AppCompatActivity implements Cartele
                 }
                 return null;
             }
-
-
         }
     }
-
 }
