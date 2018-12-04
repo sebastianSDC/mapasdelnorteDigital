@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,14 +26,12 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import static com.example.pilasnotebook.mapasdelnortedigital.utils.Constantes.TAG;
+;
 
 public class MapaClienteFragment extends Fragment implements OnMapReadyCallback {
 
@@ -65,15 +62,21 @@ public class MapaClienteFragment extends Fragment implements OnMapReadyCallback 
         txvCoordComercio = mView.findViewById(R.id.txt_coordenadas_comercio);
         txvDirComercio = mView.findViewById(R.id.txt_direccion_comercio);
 
-
         DocumentReference latlangRef = db.collection("clientes").document("prueba");
-        latlangRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        /*latlangRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                        String direccionTxt = document.getString(Constantes.DIRECCION+","+Constantes.
+                                LOCALIDAD+","+Constantes.PROVINCIA+","+Constantes.PAIS);
+
+                        String coordenadasTxt = document.getString(Constantes.COORDENADAS);
+
+                        txvDirComercio.setText(direccionTxt);
+                        txvCoordComercio.setText(coordenadasTxt);
                     } else {
                         Log.d(TAG, "No such document");
                     }
@@ -81,16 +84,16 @@ public class MapaClienteFragment extends Fragment implements OnMapReadyCallback 
                     Log.d(TAG, "get failed with ", task.getException());
                 }
             }
-        });
+        });*/
         latlangRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                cliente = documentSnapshot.toObject(Cliente.class);
+           public void onSuccess(DocumentSnapshot documentSnapshot) {
+            //cliente = documentSnapshot.toObject(Cliente.class);
+//Map<String,Object> datosCliente = documentSnapshot.getData();
+//datosCliente.get(Constantes.COORDENADAS);
 
-            }
-        });
-        //txvDirComercio.setText(cliente.getZona().getDireccion());
-        //txvCoordComercio.setText(cliente.getZona().getLatlang().toString());
+          }
+      });
 
         return mView;
     }

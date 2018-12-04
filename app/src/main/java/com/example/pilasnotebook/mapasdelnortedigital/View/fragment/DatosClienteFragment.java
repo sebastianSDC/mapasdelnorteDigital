@@ -34,11 +34,12 @@ import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.pilasnotebook.mapasdelnortedigital.R;
 import com.example.pilasnotebook.mapasdelnortedigital.model.POJO.Cliente;
+import com.example.pilasnotebook.mapasdelnortedigital.model.POJO.DatosDeContacto;
+import com.example.pilasnotebook.mapasdelnortedigital.model.POJO.Zona;
 import com.example.pilasnotebook.mapasdelnortedigital.utils.Constantes;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Continuation;
@@ -55,6 +56,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -66,32 +68,32 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.app.Activity.RESULT_OK;
 import static android.support.constraint.ConstraintSet.VISIBLE;
 import static android.support.v4.content.ContextCompat.checkSelfPermission;
+import static java.lang.Integer.parseInt;
 
 
 public class DatosClienteFragment extends Fragment {
 
 
     private OnFragmentInteractionListener mListener; // INTERFACE
-    String TAG = Constantes.TAG;
 
-    private final String CARPETA_RAIZ = "MAPASDELNORTE/";
-    private final String RUTA_IMAGEN = CARPETA_RAIZ + "fotos";
+
     private String path;
-    private Uri fotoPerfilUri;
+    private Uri fotoPerfilUri, urifoto;
 
     private final Map<String, Object> datosACargar = new HashMap<String, Object>();
     private String categoriaTxt;
 
-    //private Zona zona;
+    private Zona zona;
     private Cliente cliente;
-    private TextView datosTraidos;
+    private DatosDeContacto datosDeContacto;
 
     private EditText nombreEd, descripcionEd, direccionEd, localidadED,
-            codigoPostalEd, provinciaEd, paisEd, telefonoEd, mailEd, faceEd, instaEd, twitEd, watsapEd;
+            codigoPostalEd, provinciaEd, paisEd, telefonoEd, mailEd, faceEd, instaEd, twitEd, watsapEd, webEd;
 
     protected ImageView fotodeContacto;
-    private Button btnCargarFoto, btnCargar, btnTraer;
+    private Button btnCargarFoto, btnCargar;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+      // TODO: cambiar por GetCurrentUserId de auth
     private StorageReference storage = FirebaseStorage.getInstance().getReference();
 
     private CheckedTextView face, insta, twit, watsap;
@@ -128,6 +130,7 @@ public class DatosClienteFragment extends Fragment {
         instaEd = view.findViewById(R.id.ed_instagram_comercio);
         twitEd = view.findViewById(R.id.ed_twitter_comercio);
         watsapEd = view.findViewById(R.id.ed_whatsapp_comercio);
+        webEd = view.findViewById(R.id.ed_web_comercio);
 
         // CAMPOS DE CHEQTEXTVIEW
         face = view.findViewById(R.id.cheq_facebook);
@@ -214,33 +217,42 @@ public class DatosClienteFragment extends Fragment {
 
                 String nombreTxt = nombreEd.getText().toString().trim();
                 String descripcionTxt = descripcionEd.getText().toString().trim();
-                String direccionTxt = direccionEd.getText().toString().trim();
-                String localidadTxt = localidadED.getText().toString().trim();
-                String codPostTxt = codigoPostalEd.getText().toString().trim();
-                String provinciaTxt = provinciaEd.getText().toString().trim();
-                String paisTxt = paisEd.getText().toString().trim();
+                String direccionTxt = direccionEd.getText().toString().trim();              //pertenece a zona
+                String localidadTxt = localidadED.getText().toString().trim();              //pertenece a zona
+                Integer codPostTxt = parseInt(codigoPostalEd.getText().toString().trim());  //pertenece a zona
+                String provinciaTxt = provinciaEd.getText().toString().trim();              //pertenece a zona
+                String paisTxt = paisEd.getText().toString().trim();                        //pertenece a zona
 
                 if (!direccionTxt.isEmpty() && !localidadTxt.isEmpty() && !provinciaTxt.isEmpty()
                         && !paisTxt.isEmpty()) {
-                    getLocationFromAddress(direccionTxt + ", " + localidadTxt + ", " +
+                    zona = new Zona(direccionTxt, localidadTxt, provinciaTxt, paisTxt, codPostTxt);
+
+                    convertirDirLatlang(direccionTxt + ", " + localidadTxt + ", " +
                             provinciaTxt + ", " + paisTxt);
                 } else {
                     Toast.makeText(getActivity(), "debe completar los datos de zona para generar el punto " +
                             "en el mapa", Toast.LENGTH_LONG).show();
                 }
 
-                String telefonoTxt = telefonoEd.getText().toString().trim();
-                String mailTxt = mailEd.getText().toString().trim();
-                String faceTxt = faceEd.getText().toString().trim();
-                String instaTxt = instaEd.getText().toString().trim();
-                String twitTxt = twitEd.getText().toString().trim();
-                String watsapTxt = watsapEd.getText().toString().trim();
+                String telefonoTxt = telefonoEd.getText().toString().trim();    //pertenece a datosDeContacto
+                String mailTxt = mailEd.getText().toString().trim();            //pertenece a datosDeContacto
+                String webTxt = webEd.getText().toString().trim();              //pertenece a datosDeContacto
+                List<String> redesTxt = cargarRedesCliente();                   //pertenece a datosDeContacto
 
-                if (nombreTxt.isEmpty() || direccionTxt.isEmpty() || categoriaTxt.isEmpty()) {
+                datosDeContacto = new DatosDeContacto(telefonoTxt, mailTxt, webTxt, redesTxt);
 
+                if (nombreTxt.isEmpty() || zona.getDireccion().isEmpty() || categoriaTxt.isEmpty()) {
                     Toast.makeText(getActivity(), "debe completar los campos obligatorios", Toast.LENGTH_LONG).show();
-                } else {
-                    datosACargar.put(Constantes.NOMBRE, nombreTxt);
+                }
+                    cliente = new Cliente(nombreTxt, categoriaTxt, zona, datosDeContacto);
+                    cliente.setDescripcionComercio(descripcionTxt);
+                Object foto=datosACargar.get(Constantes.FOTO);
+                    cliente.setFoto(foto.toString());
+
+                    //datosACargar.put(Constantes.CLIENTE, cliente);
+                    //datosACargar.put(Constantes.ZONA, zona);
+                    //datosACargar.put(Constantes.DATOSDECONTACTO, datosDeContacto);
+                    /*datosACargar.put(Constantes.NOMBRE, nombreTxt);
                     datosACargar.put(Constantes.DESCRIPCION, descripcionTxt);
                     datosACargar.put(Constantes.CATEGORIA, categoriaTxt);
                     datosACargar.put(Constantes.DIRECCION, direccionTxt);
@@ -250,34 +262,61 @@ public class DatosClienteFragment extends Fragment {
                     datosACargar.put(Constantes.PAIS, paisTxt);
                     datosACargar.put(Constantes.TELEFONO, telefonoTxt);
                     datosACargar.put(Constantes.MAIL, mailTxt);
-                    datosACargar.put(Constantes.FACEBOOK, faceTxt);
-                    datosACargar.put(Constantes.INSTAGRAM, instaTxt);
-                    datosACargar.put(Constantes.TWITTER, twitTxt);
-                    datosACargar.put(Constantes.WHATSAPP, watsapTxt);
-                }
+                    datosACargar.put(Constantes.WEB, webTxt);
+                    datosACargar.put(Constantes.REDES, redesTxt);*/
 
-                db.collection("clientes").document("prueba").set(datosACargar).addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                db.collection("clientes").document(cliente.getNombreComercio()).set(cliente).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "DocumentSnapshot successfully written!");
+                        Log.d(Constantes.TAG, "DocumentSnapshot successfully written!");
+                        Toast.makeText(getActivity(), "Los Datos se Cargaron Correctamente...", Toast.LENGTH_SHORT).show();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error writing document", e);
+                        Log.w(Constantes.TAG, "Error writing document", e);
                     }
                 });
             }
         });
 
 // LOGICA DEL BOTON CARGAR FOTOS
-        btnCargarFoto.setOnClickListener(new View.OnClickListener(){
+        btnCargarFoto.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
+
                 seleccionarFoto();
             }
         });
+
+
         return view;
+    }
+
+    public List<String> cargarRedesCliente() {
+        List<String> redesExistentes = new ArrayList<>();
+
+        String faceTxt = faceEd.getText().toString().trim();
+        String instaTxt = instaEd.getText().toString().trim();
+        String twitTxt = twitEd.getText().toString().trim();
+        String watsapTxt = watsapEd.getText().toString().trim();
+
+        if (!faceTxt.isEmpty()) {
+            redesExistentes.add("facebook: " + faceTxt);
+        }
+        if (!instaTxt.isEmpty()) {
+            redesExistentes.add("instagram: " + instaTxt);
+        }
+        if (!twitTxt.isEmpty()) {
+            redesExistentes.add("twitter: " + twitTxt);
+        }
+        if (!watsapTxt.isEmpty()) {
+            redesExistentes.add("whatsapp: " + watsapTxt);
+        }
+
+        return redesExistentes;
     }
 
     private void seleccionarFoto() {
@@ -304,7 +343,7 @@ public class DatosClienteFragment extends Fragment {
     }
 
     private void openCamera() {
-        File file = new File(Environment.getExternalStorageDirectory(), RUTA_IMAGEN);
+        File file = new File(Environment.getExternalStorageDirectory(), Constantes.RUTA_IMAGEN);
         boolean isDirectoryCreated = file.exists();
 
         if (!isDirectoryCreated)
@@ -314,7 +353,7 @@ public class DatosClienteFragment extends Fragment {
             Long timestamp = System.currentTimeMillis() / 1000;
             String imageName = timestamp.toString() + ".jpg";
 
-            path = Environment.getExternalStorageDirectory() + File.separator + RUTA_IMAGEN
+            path = Environment.getExternalStorageDirectory() + File.separator + Constantes.RUTA_IMAGEN
                     + File.separator + imageName;
 
             File newFile = new File(path);
@@ -379,6 +418,8 @@ public class DatosClienteFragment extends Fragment {
         }
     }
 
+
+    // LOGICA DE SUBIR AL STORAGE Y AL FIRESTORE
     public void subirAStorageUri(Uri uri) {
 
         if (uri == null) {
@@ -411,7 +452,6 @@ public class DatosClienteFragment extends Fragment {
 
                         Uri urifoto = task.getResult();
 
-
                         datosACargar.put(Constantes.FOTO, urifoto.toString());
                         Toast.makeText(getContext(), "sube al storage y al firestore exitosamente" + task, Toast.LENGTH_SHORT).show();
                     }
@@ -421,7 +461,7 @@ public class DatosClienteFragment extends Fragment {
     }
 
     // LOGICA DE CONVERTIR DIRECCION A LATLNG
-    public void getLocationFromAddress(String direccion) {
+    public void convertirDirLatlang(String direccion) {
 
         List<Address> address;
 
@@ -433,7 +473,9 @@ public class DatosClienteFragment extends Fragment {
             coordenadas = new LatLng(latitud, longitud);
             //String stringCoordenadas = coordenadas.toString();
 
-            datosACargar.put(Constantes.COORDENADAS, coordenadas.latitude + "," + coordenadas.longitude);
+            zona.setLatlang(coordenadas);
+
+            //datosACargar.put(Constantes.COORDENADAS, coordenadas.latitude + "," + coordenadas.longitude);
 
 
         } catch (IOException e) {

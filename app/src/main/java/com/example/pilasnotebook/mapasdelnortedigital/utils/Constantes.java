@@ -8,7 +8,8 @@ public final class Constantes {
     // constante universal
 
     public static final String TAG = "tag";
-
+    public static final String CARPETA_RAIZ = "MAPASDELNORTE/";
+    public static final String RUTA_IMAGEN = CARPETA_RAIZ + "fotos";
     public static final int COD_CAMARA = 20;  //para abrir camara y tomar la foto
     public static final int COD_GALERIA = 10; // para abrir galeria y seleccionar imagen.
 
@@ -17,6 +18,7 @@ public final class Constantes {
     public static final Locale LOCALE_ARGENTINA = new Locale("es", "ARG");
 
 
+    public static final String CLIENTE = "cliente";
 
 
     //constantes admin cliente: datos
@@ -30,10 +32,14 @@ public final class Constantes {
     public static final String PAIS = "pais";
     public static final String TELEFONO = "telefono";
     public static final String MAIL = "mail";
+    public static final String WEB = "web";
+    public static final String REDES = "redes";
     public static final String FACEBOOK = "facebook";
     public static final String INSTAGRAM = "instagram";
     public static final String TWITTER = "twitter";
     public static final String WHATSAPP = "whatsapp";
+    public static final String ZONA = "zona";
+    public static final String DATOSDECONTACTO = "datos de contacto";
 
 
 

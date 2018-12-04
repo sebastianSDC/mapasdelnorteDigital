@@ -365,6 +365,17 @@
                         android:inputType="textEmailAddress"
                         android:visibility="gone" />
 
+                    <TextView
+                        android:id="@+id/web_comercio"
+                        style="@style/titulos_form"
+                        android:text="@string/web" />
+
+                    <EditText
+                        android:id="@+id/ed_web_comercio"
+                        style="@style/edittext_form"
+                        android:hint="@string/hint_web"
+                        android:inputType="textWebEditText" />
+
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 

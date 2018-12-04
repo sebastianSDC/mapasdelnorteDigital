@@ -65,6 +65,8 @@
     <string name="hint_instagram">usuario de Instagram</string>
     <string name="hint_twitter">usuario de Twitter</string>
     <string name="hint_whatsapp">numero de WhatsApp</string>
+    <string name="web"> pagina web</string>
+    <string name="hint_web">escriba la direccion web de su comercio o servicio</string>
 
 
 </resources>

@@ -2,33 +2,32 @@ package com.example.pilasnotebook.mapasdelnortedigital.model.POJO;
 
 
 import java.io.Serializable;
-import java.util.List;
-import com.google.android.gms.maps.model.LatLng;
 
 public class Cliente implements Serializable {
 
-    private String id;
-    private String categoria;
+    private String id; // lo agrego del auth.
     private String nombreComercio;
-    private String foto;
+    private String categoria;
     private Zona zona;
-    private String telefono;
-    private LatLng latlang;
-    private String mail;
-    private String horarioDeAtencion, paginaWeb;
-    private List<String> redes;
+    private DatosDeContacto datosDeContacto;
+    private String descripcionComercio; //lo agrego por set
+    private String foto;                //lo agrego por set
 
-    private String direccion;
+    private String horarioDeAtencion;   //lo agrego por set
+
+    //TODO: falta agregarle los list de cuponera y cartelera...
+
 
 
     public Cliente() {
 
     }
 
-    public Cliente(String nombre, String categoria, String direccion) {
+    public Cliente(String nombre, String categoria, Zona zona,DatosDeContacto datosDeContacto) {
         this.nombreComercio = nombre;
         this.categoria = categoria;
-        this.direccion = direccion;
+        this.zona = zona;
+        this.datosDeContacto = datosDeContacto;
 
 
     }
@@ -49,21 +48,6 @@ public class Cliente implements Serializable {
         this.zona = zona;
     }
 
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
-    public String getMail() {
-        return mail;
-    }
-
-    public void setMail(String mail) {
-        this.mail = mail;
-    }
 
     public String getHorarioDeAtencion() {
         return horarioDeAtencion;
@@ -71,22 +55,6 @@ public class Cliente implements Serializable {
 
     public void setHorarioDeAtencion(String horarioDeAtencion) {
         this.horarioDeAtencion = horarioDeAtencion;
-    }
-
-    public String getPaginaWeb() {
-        return paginaWeb;
-    }
-
-    public void setPaginaWeb(String paginaWeb) {
-        this.paginaWeb = paginaWeb;
-    }
-
-    public List<String> getRedes() {
-        return redes;
-    }
-
-    public void setRedes(List<String> redes) {
-        this.redes = redes;
     }
 
     public String getCategoria() {
@@ -111,5 +79,21 @@ public class Cliente implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getDescripcionComercio() {
+        return descripcionComercio;
+    }
+
+    public void setDescripcionComercio(String descripcionComercio) {
+        this.descripcionComercio = descripcionComercio;
+    }
+
+    public DatosDeContacto getDatosDeContacto() {
+        return datosDeContacto;
+    }
+
+    public void setDatosDeContacto(DatosDeContacto datosDeContacto) {
+        this.datosDeContacto = datosDeContacto;
     }
 }
