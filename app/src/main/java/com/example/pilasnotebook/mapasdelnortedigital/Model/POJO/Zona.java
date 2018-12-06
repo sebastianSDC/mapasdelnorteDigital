@@ -8,7 +8,7 @@ public class Zona {
     private String localidad;
     private String provincia;
     private String pais;
-    private Integer codigoPostal;
+    private String codigoPostal;
     private LatLng latlang;
 
 
@@ -23,7 +23,7 @@ public class Zona {
 
     }
 
-    public Zona(String direccion, String localidad, String provincia, String pais, Integer codigoPostal) {
+    public Zona(String direccion, String localidad, String provincia, String pais, String codigoPostal) {
         this.direccion = direccion;
         this.localidad = localidad;
         this.provincia = provincia;
@@ -63,11 +63,11 @@ public class Zona {
         this.provincia = provincia;
     }
 
-    public Integer getCodigoPostal() {
+    public String getCodigoPostal() {
         return codigoPostal;
     }
 
-    public void setCodigoPostal(Integer codigoPostal) {
+    public void setCodigoPostal(String codigoPostal) {
         this.codigoPostal = codigoPostal;
     }
 

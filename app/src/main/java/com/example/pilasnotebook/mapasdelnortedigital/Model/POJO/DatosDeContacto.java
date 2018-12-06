@@ -9,6 +9,10 @@ public class DatosDeContacto {
     private String  paginaWeb;
     private List<String> redes;
 
+    public DatosDeContacto(){
+
+    }
+
     public DatosDeContacto(String telefono, String mail, String paginaWeb, List<String> redes) {
         this.telefono = telefono;
         this.mail = mail;
