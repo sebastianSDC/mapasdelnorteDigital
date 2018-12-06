@@ -26,7 +26,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -190,6 +189,7 @@ public class DatosClienteFragment extends Fragment {
         // BOTONES DE FORMULARIO
         btnCargar = (Button) view.findViewById(R.id.btn_cargar_datos_comercio);
         btnCargarFoto = (Button) view.findViewById(R.id.btn_cargarFoto_comercio);
+
         if (validaPermisos()) {
             btnCargarFoto.setEnabled(true);
         } else {
@@ -221,7 +221,36 @@ public class DatosClienteFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
+
+                    /*datosACargar.put(Constantes.NOMBRE, nombreTxt);
+                    datosACargar.put(Constantes.DESCRIPCION, descripcionTxt);
+                    datosACargar.put(Constantes.CATEGORIA, categoriaTxt);
+                    datosACargar.put(Constantes.DIRECCION, direccionTxt);
+                    datosACargar.put(Constantes.LOCALIDAD, localidadTxt);
+                    datosACargar.put(Constantes.CODIGO_POSTAL, codPostTxt);
+                    datosACargar.put(Constantes.PROVINCIA, provinciaTxt);
+                    datosACargar.put(Constantes.PAIS, paisTxt);
+                    datosACargar.put(Constantes.TELEFONO, telefonoTxt);
+                    datosACargar.put(Constantes.MAIL, mailTxt);
+                    datosACargar.put(Constantes.FACEBOOK, faceTxt);
+                    datosACargar.put(Constantes.INSTAGRAM, instaTxt);
+                    datosACargar.put(Constantes.TWITTER, twitTxt);
+                    datosACargar.put(Constantes.WHATSAPP, watsapTxt);*/
                 cargarCliente();
+
+                /*db.collection("clientes").document("prueba").set(cliente).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully written!");
+                        Toast.makeText(getActivity(), "Cliente cargado correctamente...", Toast.LENGTH_SHORT).show();
+                        //cliente.getNombreComercio();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error writing document", e);
+                    }
+                });*/
             }
         });
 
@@ -236,6 +265,7 @@ public class DatosClienteFragment extends Fragment {
     }
 
     public void cargarCliente() {
+        //cliente = new Cliente();
         String nombreTxt = nombreEd.getText().toString().trim();
         String descripcionTxt = descripcionEd.getText().toString().trim();
         if (nombreTxt.isEmpty()) {
@@ -248,12 +278,12 @@ public class DatosClienteFragment extends Fragment {
         }
         cargarZona();
         if (zona == null) {
-            //return;
+            return;
         } else {
             cliente.setZona(zona);
             cliente.setDatosDeContacto(cargarDatosDeContacto());
 
-            db.collection("clientes").document(cliente.getNombreComercio()).set(cliente).addOnSuccessListener(new OnSuccessListener<Void>() {
+            db.collection("clientes").document("prueba").set(cliente).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     Log.d(TAG, "DocumentSnapshot successfully written!");
@@ -269,7 +299,9 @@ public class DatosClienteFragment extends Fragment {
         }
     }
 
+
     private Zona cargarZona() {
+        //zona = new Zona();
         String direccionTxt = direccionEd.getText().toString().trim();
         String localidadTxt = localidadED.getText().toString().trim();
         String codPostTxt = codigoPostalEd.getText().toString().trim();
@@ -278,16 +310,23 @@ public class DatosClienteFragment extends Fragment {
         if (!direccionTxt.isEmpty() && !localidadTxt.isEmpty() && !provinciaTxt.isEmpty() && !paisTxt.isEmpty()) {
             String direccionAConvertir = direccionTxt + ", " + localidadTxt + ", " +
                     provinciaTxt + ", " + paisTxt;
-            zona = new Zona(direccionTxt, localidadTxt, provinciaTxt, paisTxt, codPostTxt);
+            zona.setDireccion(direccionTxt);
+            zona.setLocalidad(localidadTxt);
+            zona.setProvincia(provinciaTxt);
+            zona.setPais(paisTxt);
+            zona.setCodigoPostal(codPostTxt);
             zona.setLatlang(getLocationFromAddress(direccionAConvertir));
             return zona;
         } else {
             Toast.makeText(getActivity(), "Debe completar todos los campos de Datos de Zona para generar el punto en el mapa...", Toast.LENGTH_LONG).show();
+            zona=null;
+            return zona;
         }
-        return zona = null;
+
     }
 
     private DatosDeContacto cargarDatosDeContacto() {
+        //datosDeContacto=new DatosDeContacto();
         String telefonoTxt = telefonoEd.getText().toString().trim();
         String mailTxt = mailEd.getText().toString().trim();
         List<String> redesTxt = cargarRedesCliente();
@@ -581,20 +620,6 @@ public class DatosClienteFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
 
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            try {
-                InputMethodManager mImm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                mImm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
-                mImm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
-            } catch (Exception e) {
-                //Log.e(TAG, "setUserVisibleHint: ", e);
-            }
-        }
     }
 
 }
