@@ -42,12 +42,6 @@
                 android:text="datos" />
 
             <android.support.design.widget.TabItem
-                android:id="@+id/tabItem_mapa"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="mapa" />
-
-            <android.support.design.widget.TabItem
                 android:id="@+id/tabItem_cuponera"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -144,13 +138,13 @@
     <!--//////////////////////////////////////////////////////////////////////////////////-->
 
 
-    <android.support.design.widget.FloatingActionButton
+   <!-- <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        app:srcCompat="@android:drawable/ic_dialog_email" />-->
     <!--app:backgroundTint="@color/colorPrimaryDark"-->
 
 </android.support.design.widget.CoordinatorLayout>

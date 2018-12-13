@@ -14,35 +14,21 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.pilasnotebook.mapasdelnortedigital.R;
-import com.example.pilasnotebook.mapasdelnortedigital.model.POJO.Cliente;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 ;
 
-public class MapaClienteFragment extends Fragment implements OnMapReadyCallback {
+public class MapaClienteFragment extends Fragment /*implements OnMapReadyCallback*/ {
 
     private OnFragmentInteractionListener mListener;
 
-    private GoogleMap mGoogleMap;
-    private View mView;
-    MapView mapView;
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private TextView txvDirComercio, txvCoordComercio;
-    private Cliente cliente = new Cliente();
+    // private GoogleMap mGoogleMap;
+    //private View mView;
+    //MapView mapView;
+    //private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    //private TextView txvDirComercio, txvCoordComercio;
+    //private Cliente cliente = new Cliente();
 
     public MapaClienteFragment() {
         // Required empty public constructor
@@ -56,13 +42,13 @@ public class MapaClienteFragment extends Fragment implements OnMapReadyCallback 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        mView = inflater.inflate(R.layout.fragment_mapa, container, false);
+        //Inflate the layout for this fragment
+        View v = inflater.inflate(R.layout.fragment_mapa, container, false);
 
-        txvCoordComercio = mView.findViewById(R.id.txt_coordenadas_comercio);
-        txvDirComercio = mView.findViewById(R.id.txt_direccion_comercio);
+        //txvCoordComercio = mView.findViewById(R.id.txt_coordenadas_comercio);
+        //txvDirComercio = mView.findViewById(R.id.txt_direccion_comercio);
 
-        DocumentReference latlangRef = db.collection("clientes").document("prueba");
+        //DocumentReference latlangRef = db.collection("clientes").document("prueba");
         /*latlangRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -85,20 +71,21 @@ public class MapaClienteFragment extends Fragment implements OnMapReadyCallback 
                 }
             }
         });*/
-        latlangRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-           public void onSuccess(DocumentSnapshot documentSnapshot) {
-            //cliente = documentSnapshot.toObject(Cliente.class);
+        //latlangRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        //@Override
+        //public void onSuccess(DocumentSnapshot documentSnapshot) {
+        //cliente = documentSnapshot.toObject(Cliente.class);
 //Map<String,Object> datosCliente = documentSnapshot.getData();
 //datosCliente.get(Constantes.COORDENADAS);
 
-          }
-      });
+        //      }
+        // });
 
-        return mView;
+        // return mView;
+        return v;
     }
 
-    @Override
+/*    @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -126,14 +113,13 @@ public class MapaClienteFragment extends Fragment implements OnMapReadyCallback 
         mGoogleMap.setMinZoomPreference(15);
         mGoogleMap.addMarker(new MarkerOptions().position(comercio).title("cliente"));
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(comercio));
-    }
+    }*/
 
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+        //  if (mListener != null) {
+        //         mListener.onFragmentInteraction(uri);
     }
 
     @Override
@@ -153,18 +139,18 @@ public class MapaClienteFragment extends Fragment implements OnMapReadyCallback 
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
+/**
+ * This interface must be implemented by activities that contain this
+ * fragment to allow an interaction in this fragment to be communicated
+ * to the activity and potentially other fragments contained in that
+ * activity.
+ * <p>
+ * See the Android Training lesson <a href=
+ * "http://developer.android.com/training/basics/fragments/communicating.html"
+ * >Communicating with Other Fragments</a> for more information.
+ */
+public interface OnFragmentInteractionListener {
+    // TODO: Update argument type and name
+    void onFragmentInteraction(Uri uri);
+}
 }

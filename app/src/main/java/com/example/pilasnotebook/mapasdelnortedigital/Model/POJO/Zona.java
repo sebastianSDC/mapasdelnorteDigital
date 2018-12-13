@@ -2,33 +2,24 @@ package com.example.pilasnotebook.mapasdelnortedigital.model.POJO;
 
 import com.google.android.gms.maps.model.LatLng;
 
-public class Zona {
+import java.io.Serializable;
+
+public class Zona implements Serializable {
 
     private String direccion;
     private String localidad;
     private String provincia;
     private String pais;
-    private String codigoPostal;
     private LatLng latlang;
 
-
-
-
     public Zona() {
-
-    }
-    public Zona(String direccion) {
-        this.direccion = direccion;
-
-
     }
 
-    public Zona(String direccion, String localidad, String provincia, String pais, String codigoPostal) {
+    public Zona(String direccion, String localidad, String provincia, String pais) {
         this.direccion = direccion;
         this.localidad = localidad;
         this.provincia = provincia;
         this.pais = pais;
-        this.codigoPostal = codigoPostal;
     }
 
     public String getDireccion() {
@@ -61,14 +52,6 @@ public class Zona {
 
     public void setProvincia(String provincia) {
         this.provincia = provincia;
-    }
-
-    public String getCodigoPostal() {
-        return codigoPostal;
-    }
-
-    public void setCodigoPostal(String codigoPostal) {
-        this.codigoPostal = codigoPostal;
     }
 
     public LatLng getLatlang() {

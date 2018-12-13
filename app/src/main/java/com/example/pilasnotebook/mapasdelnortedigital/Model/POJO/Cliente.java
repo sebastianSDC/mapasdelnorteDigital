@@ -10,6 +10,7 @@ public class Cliente implements Serializable {
     private String categoria;
     private Zona zona;
     private DatosDeContacto datosDeContacto;
+    private DatosAdicionales datosAdicionales;
     private String descripcionComercio; //lo agrego por set
     private String foto;                //lo agrego por set
 
@@ -23,13 +24,14 @@ public class Cliente implements Serializable {
 
     }
 
-    public Cliente(String nombre, String categoria, Zona zona,DatosDeContacto datosDeContacto) {
+    public Cliente(String nombre, String categoria, Zona zona, DatosDeContacto datosDeContacto, DatosAdicionales datosAdicionales) {
         this.nombreComercio = nombre;
         this.categoria = categoria;
         this.zona = zona;
         this.datosDeContacto = datosDeContacto;
 
 
+        this.datosAdicionales = datosAdicionales;
     }
 
     public String getNombreComercio() {
@@ -95,5 +97,13 @@ public class Cliente implements Serializable {
 
     public void setDatosDeContacto(DatosDeContacto datosDeContacto) {
         this.datosDeContacto = datosDeContacto;
+    }
+
+    public DatosAdicionales getDatosAdicionales() {
+        return datosAdicionales;
+    }
+
+    public void setDatosAdicionales(DatosAdicionales datosAdicionales) {
+        this.datosAdicionales = datosAdicionales;
     }
 }

@@ -317,7 +317,7 @@
                 android:backgroundTint="@color/colorAccent"
                 android:fontFamily="@font/montserrat"
                 android:maxHeight="50dp"
-                android:text="@string/cargar_datos"
+                android:text="cambiar textos"
                 android:textAlignment="center"
                 android:textColor="@color/colorBlanco" />
 
@@ -330,7 +330,7 @@
                 android:backgroundTint="@color/colorAccent"
                 android:fontFamily="@font/montserrat"
                 android:maxHeight="50dp"
-                android:text="@string/mostrar_datos_cargados"
+                android:text="cambiar textos"
                 android:textAlignment="center"
                 android:textColor="@color/colorBlanco" />
 

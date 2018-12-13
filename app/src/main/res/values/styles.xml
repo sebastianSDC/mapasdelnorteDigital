@@ -18,8 +18,11 @@
         <item name="android:backgroundTint">@color/colorAccent</item>
         <item name="android:fontFamily">@font/montserrat</item>
         <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">24dp</item>
         <item name="android:textColor">@color/colorBlanco</item>
         <item name="android:textSize">11sp</item>
+        <item name="android:layout_marginTop" tools:ignore="NewApi">8dp</item>
+        <item name="android:layout_marginBottom" tools:ignore="NewApi">8dp</item>
     </style>
 
     <style name="titulos_form">
