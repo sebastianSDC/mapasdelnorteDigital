@@ -92,8 +92,8 @@
                         android:gravity="top"
                         android:hint="@string/hint_descripcion"
                         android:inputType="textMultiLine"
-                        tools:text="@tools:sample/lorem/random"
-                        tools:ignore="Autofill" />
+                        tools:ignore="Autofill"
+                        tools:text="@tools:sample/lorem/random" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -325,6 +325,19 @@
                             android:textSize="12sp" />
 
                     </LinearLayout>
+
+
+
+                    <Switch
+                        android:id="@+id/switch_direccion_fija"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:text="Dirección Física "
+                        android:switchTextAppearance="@style/titulos_form"
+                        android:textOn="SI"
+                        android:textOff="No"
+                         />
 
                     <TextView
                         android:id="@+id/direccion_comercio"
@@ -836,9 +849,9 @@
                             <TextView
                                 android:id="@+id/telefono_comercio_gone"
                                 style="@style/titulos_form"
+                                android:layout_marginBottom="0dp"
                                 android:alpha=".3"
-                                android:text="@string/telefono"
-                                android:layout_marginBottom="0dp"/>
+                                android:text="@string/telefono" />
 
                             <TextView
                                 android:id="@+id/txv_telefono_comercio_gone"
@@ -846,15 +859,14 @@
                                 android:layout_marginBottom="8dp"
                                 android:inputType="phone"
                                 android:text="@string/telefono"
-                                tools:ignore="TextViewEdits"
-                                />
+                                tools:ignore="TextViewEdits" />
 
                             <TextView
                                 android:id="@+id/mail_comercio_gone"
                                 style="@style/titulos_form"
+                                android:layout_marginBottom="0dp"
                                 android:alpha=".3"
-                                android:text="@string/mail"
-                                android:layout_marginBottom="0dp"/>
+                                android:text="@string/mail" />
 
                             <TextView
                                 android:id="@+id/txv_mail_comercio_gone"
@@ -867,9 +879,9 @@
                             <TextView
                                 android:id="@+id/web_comercio_gone"
                                 style="@style/titulos_form"
+                                android:layout_marginBottom="0dp"
                                 android:alpha=".3"
-                                android:text="@string/web"
-                                android:layout_marginBottom="0dp"/>
+                                android:text="@string/web" />
 
                             <TextView
                                 android:id="@+id/txv_web_comercio_gone"
@@ -892,41 +904,41 @@
                             <TextView
                                 android:id="@+id/redes_comercio_gone"
                                 style="@style/titulos_form"
+                                android:layout_marginBottom="0dp"
                                 android:alpha=".3"
-                                android:text="@string/redes"
-                                android:layout_marginBottom="0dp"/>
+                                android:text="@string/redes" />
 
                             <TextView
                                 android:id="@+id/txv_facebook_gone"
                                 style="@style/titulos_form"
                                 android:inputType="textMultiLine"
                                 android:text="@string/facebook"
-                                tools:ignore="TextViewEdits"
-                                android:textAllCaps="false"/>
+                                android:textAllCaps="false"
+                                tools:ignore="TextViewEdits" />
 
                             <TextView
                                 android:id="@+id/txv_instagram_gone"
                                 style="@style/titulos_form"
                                 android:inputType="textMultiLine"
                                 android:text="@string/instagram"
-                                tools:ignore="TextViewEdits"
-                                android:textAllCaps="false"/>
+                                android:textAllCaps="false"
+                                tools:ignore="TextViewEdits" />
 
                             <TextView
                                 android:id="@+id/txv_twitter_gone"
                                 style="@style/titulos_form"
                                 android:inputType="textMultiLine"
                                 android:text="@string/twitter"
-                                tools:ignore="TextViewEdits"
-                                android:textAllCaps="false"/>
+                                android:textAllCaps="false"
+                                tools:ignore="TextViewEdits" />
 
                             <TextView
                                 android:id="@+id/txv_whatsapp_gone"
                                 style="@style/titulos_form"
                                 android:inputType="textMultiLine"
                                 android:text="@string/whatsapp"
-                                tools:ignore="TextViewEdits"
-                                android:textAllCaps="false"/>
+                                android:textAllCaps="false"
+                                tools:ignore="TextViewEdits" />
 
 
                         </LinearLayout>
@@ -1272,41 +1284,40 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:orientation="vertical"
-                        >
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/txv_reservas_gone"
                             style="@style/titulos_form"
-                            android:layout_marginBottom="4dp"
-                            android:text="@string/RESERVATIONS"
-                            android:background="@color/colorCardCliente"
                             android:layout_width="match_parent"
-                            android:paddingEnd="8dp"
+                            android:layout_marginBottom="4dp"
+                            android:background="@color/colorCardCliente"
                             android:gravity="end"
+                            android:paddingEnd="8dp"
+                            android:text="@string/RESERVATIONS"
                             tools:ignore="RtlSymmetry" />
 
                         <TextView
                             android:id="@+id/telefono_reservas_comercio_gone"
                             style="@style/titulos_form"
+                            android:layout_marginBottom="0dp"
                             android:alpha=".3"
-                            android:text="@string/telefono_de_reservas"
-                            android:layout_marginBottom="0dp"/>
+                            android:text="@string/telefono_de_reservas" />
 
                         <TextView
                             android:id="@+id/txv_telefono_reservas_gone"
                             style="@style/titulos_form"
+                            android:layout_marginBottom="8dp"
                             android:inputType="textCapWords"
                             android:text="@string/telefono_de_reservas"
-                            tools:ignore="TextViewEdits"
-                            android:layout_marginBottom="8dp"/>
+                            tools:ignore="TextViewEdits" />
 
                         <TextView
                             android:id="@+id/tolerancia_reservas_gone"
                             style="@style/titulos_form"
+                            android:layout_marginBottom="0dp"
                             android:alpha=".3"
-                            android:text="@string/tolerancia_de_reservas"
-                            android:layout_marginBottom="0dp"/>
+                            android:text="@string/tolerancia_de_reservas" />
 
                         <TextView
                             android:id="@+id/txv_tolerancia_reservas_gone"
@@ -1314,15 +1325,14 @@
                             android:layout_marginBottom="8dp"
                             android:inputType="textCapWords"
                             android:text="@string/tolerancia_de_reservas"
-                            tools:ignore="TextViewEdits"
-                            />
+                            tools:ignore="TextViewEdits" />
 
                         <TextView
                             android:id="@+id/seña_reservas_gone"
                             style="@style/titulos_form"
+                            android:layout_marginBottom="0dp"
                             android:alpha=".3"
-                            android:text="@string/seña_de_reserva"
-                            android:layout_marginBottom="0dp"/>
+                            android:text="@string/seña_de_reserva" />
 
                         <TextView
                             android:id="@+id/txv_seña_reservas_gone"
@@ -1332,6 +1342,7 @@
                             android:text="@string/seña_de_reserva"
                             tools:ignore="TextViewEdits" />
                     </LinearLayout>
+
                     <LinearLayout
                         android:id="@+id/linearlayout_delivery_gone"
                         android:layout_width="match_parent"
@@ -1342,20 +1353,20 @@
                         <TextView
                             android:id="@+id/txv_delivery_gone"
                             style="@style/titulos_form"
-                            android:layout_marginBottom="4dp"
-                            android:text="@string/DELIVERY"
-                            android:background="@color/colorCardCliente"
                             android:layout_width="match_parent"
-                            android:paddingEnd="8dp"
+                            android:layout_marginBottom="4dp"
+                            android:background="@color/colorCardCliente"
                             android:gravity="end"
+                            android:paddingEnd="8dp"
+                            android:text="@string/DELIVERY"
                             tools:ignore="RtlSymmetry" />
 
                         <TextView
                             android:id="@+id/telefono_delivery_comercio_gone"
                             style="@style/titulos_form"
+                            android:layout_marginBottom="0dp"
                             android:alpha=".3"
-                            android:text="@string/telefono_de_delivery"
-                            android:layout_marginBottom="0dp"/>
+                            android:text="@string/telefono_de_delivery" />
 
                         <TextView
                             android:id="@+id/txv_telefono_delivery_gone"
@@ -1368,9 +1379,9 @@
                         <TextView
                             android:id="@+id/radio_entrega_delivery_gone"
                             style="@style/titulos_form"
+                            android:layout_marginBottom="0dp"
                             android:alpha=".3"
-                            android:text="@string/radioEntrega_delivery"
-                            android:layout_marginBottom="0dp"/>
+                            android:text="@string/radioEntrega_delivery" />
 
                         <TextView
                             android:id="@+id/txv_radio_entrega_delivery_gone"
@@ -1380,38 +1391,39 @@
                             android:text="@string/radioEntrega_delivery"
                             tools:ignore="TextViewEdits" />
                     </LinearLayout>
+
                     <LinearLayout
-                    android:id="@+id/linearlayout_vtaOnline_gone"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/txv_vtaOnline_gone"
-                        style="@style/titulos_form"
-                        android:layout_marginBottom="4dp"
-                        android:text="@string/venta_on_line"
-                        android:background="@color/colorCardCliente"
+                        android:id="@+id/linearlayout_vtaOnline_gone"
                         android:layout_width="match_parent"
-                        android:paddingEnd="8dp"
-                        android:gravity="end"
-                        tools:ignore="RtlSymmetry" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/datos_facturacion_gone"
-                        style="@style/titulos_form"
-                        android:alpha=".3"
-                        android:text="@string/datos_facturacion"
-                        android:layout_marginBottom="0dp"/>
+                        <TextView
+                            android:id="@+id/txv_vtaOnline_gone"
+                            style="@style/titulos_form"
+                            android:layout_width="match_parent"
+                            android:layout_marginBottom="4dp"
+                            android:background="@color/colorCardCliente"
+                            android:gravity="end"
+                            android:paddingEnd="8dp"
+                            android:text="@string/venta_on_line"
+                            tools:ignore="RtlSymmetry" />
 
-                    <TextView
-                        android:id="@+id/txv_titular_facturacion_gone"
-                        style="@style/titulos_form"
-                        android:layout_marginBottom="8dp"
-                        android:inputType="textCapWords"
-                        android:text="@string/hint_titular_facturacion"
-                        tools:ignore="TextViewEdits" />
+                        <TextView
+                            android:id="@+id/datos_facturacion_gone"
+                            style="@style/titulos_form"
+                            android:layout_marginBottom="0dp"
+                            android:alpha=".3"
+                            android:text="@string/datos_facturacion" />
+
+                        <TextView
+                            android:id="@+id/txv_titular_facturacion_gone"
+                            style="@style/titulos_form"
+                            android:layout_marginBottom="8dp"
+                            android:inputType="textCapWords"
+                            android:text="@string/hint_titular_facturacion"
+                            tools:ignore="TextViewEdits" />
 
                         <TextView
                             android:id="@+id/txv_banco_facturacion_gone"
@@ -1453,7 +1465,7 @@
                             android:text="@string/hint_cuit_facturacion"
                             tools:ignore="TextViewEdits" />
 
-                </LinearLayout>
+                    </LinearLayout>
 
                 </LinearLayout>
             </android.support.v7.widget.CardView>

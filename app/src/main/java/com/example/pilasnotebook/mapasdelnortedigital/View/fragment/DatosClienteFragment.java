@@ -80,13 +80,16 @@ import static android.support.v4.content.ContextCompat.checkSelfPermission;
 
 public class DatosClienteFragment extends Fragment implements OnMapReadyCallback {
 
-    protected ImageView fotodeContacto, fotoPerfilOculto;
-    protected Spinner categorias;
     String TAG = Constantes.TAG;
     private OnFragmentInteractionListener mListener; // INTERFACE
+    protected Spinner categorias;
+    private String categoriaTxt;
+
     //ATRIBUTOS PARA FOTO
     private String path;
     private Uri fotoPerfilUri;
+    protected ImageView fotodeContacto, fotoPerfilOculto;
+
     //MODEL POJO USADOS
     private Zona zona;
     private Cliente cliente;
@@ -95,6 +98,7 @@ public class DatosClienteFragment extends Fragment implements OnMapReadyCallback
     private DatosDeFacturacion datosDeFacturacion;
     private Delivery servicioDelivery;
     private Reservas servicioReservas;
+
     //EDITTEXT DEL FORMULARIO ADMIN CLIENTE
     private EditText nombreEd, descripcionEd,
             direccionEd, localidadED, provinciaEd, paisEd,
@@ -102,12 +106,13 @@ public class DatosClienteFragment extends Fragment implements OnMapReadyCallback
             telResEd, toleranciaEd, señaEd,
             telDelivEd, radioDelivEd,
             titularEd, bancoEd, tipoCuentaEd, numCuentaEd, cbuEd, cuitEd;
+
     //CHEQUED-TXV DEL FORMULARIO ADMIN CLIENTE
     private CheckedTextView face, insta, twit, watsap, reservas, delivery, vtaOnLine;
+
     //BOTONES DEL FORMULARIO ADMIN CLIENTE
     private Button btnCargarFoto, btnCargarDatosPerfil, btnVerMapa, btnCargarDatosZona, btnCargarDatosContacto, btnCargarDatosAdicionales,
             btnModifDatosCliente, btnCargarCliente;
-    private String categoriaTxt;
 
     //CARDVIEW DEL FORMULARIO ADMIN CLIENTE
     private CardView perfilCardView, zonaCardView, contactoCardView, adicionalesCardView,
@@ -115,7 +120,6 @@ public class DatosClienteFragment extends Fragment implements OnMapReadyCallback
 
     //LINEAR LAYOUT DEL FORMULARIO ADMIN CLIENTE
     private LinearLayout reservasLL, deliveryLL, vtaOnlineLL, reservasOcultoLL, deliveryOcultoLL, vtaOnlineOcultoLL;
-    //GONE
 
     //TXV DEL FORMULARIO ADMIN CLIENTE - GONE
     private TextView nombretxv, categoriatxv, descripciontxv,
@@ -305,7 +309,6 @@ public class DatosClienteFragment extends Fragment implements OnMapReadyCallback
             }
         });
 
-
         //GEOCODE DIR A LATLNG
         geocoder = new Geocoder(getActivity(), Constantes.LOCALE_ARGENTINA);
 
@@ -320,7 +323,6 @@ public class DatosClienteFragment extends Fragment implements OnMapReadyCallback
         datosDeFacturacion = new DatosDeFacturacion();
         servicioReservas = new Reservas();
         servicioDelivery = new Delivery();
-
 
         // BOTONES DE FORMULARIO
         btnCargarCliente = (Button) view.findViewById(R.id.btn_cargar_cliente);
@@ -348,7 +350,6 @@ public class DatosClienteFragment extends Fragment implements OnMapReadyCallback
                 }
                 categoriaTxt = parent.getItemAtPosition(position).toString();
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
@@ -402,7 +403,7 @@ public class DatosClienteFragment extends Fragment implements OnMapReadyCallback
             }
         });
 
-        //LOGICA DEL BOTON MODIFICAR CLIENTE AL FIRESTORE
+//LOGICA DEL BOTON MODIFICAR CLIENTE AL FIRESTORE
         btnModifDatosCliente.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -512,14 +513,16 @@ public class DatosClienteFragment extends Fragment implements OnMapReadyCallback
     private void cargarDatosPerfil() {
         String nombreTxt = nombreEd.getText().toString().trim();
         String descripcionTxt = descripcionEd.getText().toString().trim();
-        if (nombreTxt.isEmpty()) {
+        if (nombreTxt.isEmpty() || categoriaTxt == null) {
             Toast.makeText(getActivity(), "debe completar el nombre y seleccionar una categoría ", Toast.LENGTH_LONG).show();
         } else {
             nombretxv.setText(nombreTxt);
+
             categoriatxv.setText(categoriaTxt);
             descripciontxv.setText(descripcionTxt);
             fotoPerfilOculto.setImageURI(fotoPerfilUri);
             cliente.setNombreComercio(nombreTxt);
+            subirAStorageUri(fotoPerfilUri);
             cliente.setDescripcionComercio(descripcionTxt);
             cliente.setCategoria(categoriaTxt);
             perfilCardView.setVisibility(View.GONE);
@@ -533,7 +536,7 @@ public class DatosClienteFragment extends Fragment implements OnMapReadyCallback
                 || contactoOcultoCardView.getVisibility() == View.GONE || adicionalesOcultoCardView.getVisibility() == View.GONE) {
             Toast.makeText(getActivity(), "antes de cargar el Cliente debe guardar los Datos.", Toast.LENGTH_SHORT).show();
         } else {
-            if (cliente.getNombreComercio() == null && categoriaTxt.equals("Seleccione una…")) {
+            if (cliente.getNombreComercio() == null && categoriaTxt == null) {
                 Toast.makeText(getActivity(), "el Cliente no se puede cargar sin Nombre ni Categoría.", Toast.LENGTH_SHORT).show();
             } else {
                     db.collection("clientes").document(cliente.getNombreComercio()).set(cliente).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -635,7 +638,7 @@ public class DatosClienteFragment extends Fragment implements OnMapReadyCallback
     private void seleccionarFoto() {
         final CharSequence[] option = {"Tomar foto", "Abrir Galería", "Cancelar"};
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Eleige una opción");
+        builder.setTitle("Elige una opción");
         builder.setItems(option, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
@@ -710,10 +713,8 @@ public class DatosClienteFragment extends Fragment implements OnMapReadyCallback
                 case Constantes.COD_GALERIA:
                     fotoPerfilUri = data.getData();
                     fotodeContacto.setImageURI(fotoPerfilUri);
-                    //subirAStorageUri(fotoPerfilUri);
                     break;
             }
-            subirAStorageUri(fotoPerfilUri);
         }
     }
 
@@ -911,5 +912,6 @@ public class DatosClienteFragment extends Fragment implements OnMapReadyCallback
         void onFragmentInteraction(Uri uri);
 
     }
+
 //////////////////////fin de metodos
 }
