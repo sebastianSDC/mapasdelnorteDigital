@@ -8,7 +8,8 @@ public final class Constantes {
     // constante universal
 
     public static final String TAG = "tag";
-
+    public static final String CARPETA_RAIZ = "MAPASDELNORTE/";
+    public static final String RUTA_IMAGEN = CARPETA_RAIZ + "fotos";
     public static final int COD_CAMARA = 20;  //para abrir camara y tomar la foto
     public static final int COD_GALERIA = 10; // para abrir galeria y seleccionar imagen.
 
