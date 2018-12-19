@@ -37,6 +37,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -84,6 +85,7 @@ public class DatosClienteFragment extends Fragment implements OnMapReadyCallback
     private OnFragmentInteractionListener mListener; // INTERFACE
     protected Spinner categorias;
     private String categoriaTxt;
+    private Switch switchDireccion;
 
     //ATRIBUTOS PARA FOTO
     private String path;
@@ -119,7 +121,7 @@ public class DatosClienteFragment extends Fragment implements OnMapReadyCallback
             perfilOcultoCardView, zonaOcultaCardView, contactoOcultoCardView, adicionalesOcultoCardView; //GONE
 
     //LINEAR LAYOUT DEL FORMULARIO ADMIN CLIENTE
-    private LinearLayout reservasLL, deliveryLL, vtaOnlineLL, reservasOcultoLL, deliveryOcultoLL, vtaOnlineOcultoLL;
+    private LinearLayout reservasLL, deliveryLL, vtaOnlineLL, reservasOcultoLL, deliveryOcultoLL, vtaOnlineOcultoLL, direccionFijaLL;
 
     //TXV DEL FORMULARIO ADMIN CLIENTE - GONE
     private TextView nombretxv, categoriatxv, descripciontxv,
@@ -188,6 +190,8 @@ public class DatosClienteFragment extends Fragment implements OnMapReadyCallback
         deliveryOcultoLL = view.findViewById(R.id.linearlayout_delivery_gone);
         vtaOnlineLL = view.findViewById(R.id.linearlayout_servicio_vtaOnLine);
         vtaOnlineOcultoLL = view.findViewById(R.id.linearlayout_vtaOnline_gone);
+        switchDireccion = view.findViewById(R.id.switch_direccion_fija);
+        direccionFijaLL = view.findViewById(R.id.linearlayout_direccion_fisica);
 
 
         //DATOS DE OCULTO
@@ -345,15 +349,28 @@ public class DatosClienteFragment extends Fragment implements OnMapReadyCallback
         categorias.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) {
+                categoriaTxt = parent.getItemAtPosition(position).toString();
+                if (parent.getItemAtPosition(position) == parent.getItemAtPosition(0)) {
                     categoriaTxt = null;
                 }
-                categoriaTxt = parent.getItemAtPosition(position).toString();
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+        direccionFijaLL.setVisibility(View.GONE);
+        //LOGICA DEL SWITCH
+        switchDireccion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                direccionFijaLL.setVisibility(View.GONE);
+                if (switchDireccion.isChecked()) {
+                    direccionFijaLL.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
 
 // LOGICA DEL BOTON CARGAR FOTOS
         btnCargarFoto.setOnClickListener(new View.OnClickListener() {
@@ -423,21 +440,21 @@ public class DatosClienteFragment extends Fragment implements OnMapReadyCallback
     }
 
     private void modificarDatosCliente() {
-        adicionalesOcultoCardView.setVisibility(View.GONE);
-        contactoOcultoCardView.setVisibility(View.GONE);
-        zonaOcultaCardView.setVisibility(View.GONE);
-        perfilOcultoCardView.setVisibility(View.GONE);
         adicionalesCardView.setVisibility(View.VISIBLE);
         contactoCardView.setVisibility(View.VISIBLE);
         zonaCardView.setVisibility(View.VISIBLE);
         perfilCardView.setVisibility(View.VISIBLE);
+        adicionalesOcultoCardView.setVisibility(View.GONE);
+        contactoOcultoCardView.setVisibility(View.GONE);
+        zonaOcultaCardView.setVisibility(View.GONE);
+        perfilOcultoCardView.setVisibility(View.GONE);
     }
 
     private void cargarDatosAdicionales() {
         datosAdicionales = new DatosAdicionales(cargarReservas(), cargarDelivery(), cargarDatosFacturacion());
         cliente.setDatosAdicionales(datosAdicionales);
-        adicionalesCardView.setVisibility(View.GONE);
         adicionalesOcultoCardView.setVisibility(View.VISIBLE);
+        adicionalesCardView.setVisibility(View.GONE);
     }
 
     private DatosDeFacturacion cargarDatosFacturacion() {
@@ -517,7 +534,6 @@ public class DatosClienteFragment extends Fragment implements OnMapReadyCallback
             Toast.makeText(getActivity(), "debe completar el nombre y seleccionar una categoría ", Toast.LENGTH_LONG).show();
         } else {
             nombretxv.setText(nombreTxt);
-
             categoriatxv.setText(categoriaTxt);
             descripciontxv.setText(descripcionTxt);
             fotoPerfilOculto.setImageURI(fotoPerfilUri);
@@ -525,64 +541,69 @@ public class DatosClienteFragment extends Fragment implements OnMapReadyCallback
             subirAStorageUri(fotoPerfilUri);
             cliente.setDescripcionComercio(descripcionTxt);
             cliente.setCategoria(categoriaTxt);
-            perfilCardView.setVisibility(View.GONE);
             perfilOcultoCardView.setVisibility(View.VISIBLE);
+            perfilCardView.setVisibility(View.GONE);
         }
     }
 
     public void cargarCliente() {
-
-        if (perfilOcultoCardView.getVisibility() == View.GONE || zonaOcultaCardView.getVisibility() == View.GONE
+        if (perfilOcultoCardView.getVisibility() == View.GONE || direccionFijaLL.getVisibility() == View.VISIBLE && zonaOcultaCardView.getVisibility() == View.GONE
                 || contactoOcultoCardView.getVisibility() == View.GONE || adicionalesOcultoCardView.getVisibility() == View.GONE) {
             Toast.makeText(getActivity(), "antes de cargar el Cliente debe guardar los Datos.", Toast.LENGTH_SHORT).show();
         } else {
             if (cliente.getNombreComercio() == null && categoriaTxt == null) {
                 Toast.makeText(getActivity(), "el Cliente no se puede cargar sin Nombre ni Categoría.", Toast.LENGTH_SHORT).show();
             } else {
-                    db.collection("clientes").document(cliente.getNombreComercio()).set(cliente).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d(TAG, "DocumentSnapshot successfully written!");
-                            Toast.makeText(getActivity(), "Cliente cargado correctamente...", Toast.LENGTH_SHORT).show();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w(TAG, "Error writing document", e);
-                        }
-                    });
-                }
+                db.collection("clientes").document(cliente.getNombreComercio()).set(cliente).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully written!");
+                        Toast.makeText(getActivity(), "Cliente cargado correctamente...", Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error writing document", e);
+                    }
+                });
             }
         }
+    }
 
     private void cargarDatosZona() {
-        String direccionTxt = direccionEd.getText().toString().trim();
-        String localidadTxt = localidadED.getText().toString().trim();
-        String provinciaTxt = provinciaEd.getText().toString().trim();
-        String paisTxt = paisEd.getText().toString().trim();
-        direcciontxv.setText(direccionTxt);
-        localidadtxv.setText(localidadTxt);
-        provinciatxv.setText(provinciaTxt);
-        paistxv.setText(paisTxt);
-        if (direccionTxt.isEmpty() || localidadTxt.isEmpty() || provinciaTxt.isEmpty() || paisTxt.isEmpty()) {
-            Toast.makeText(getActivity(), "Debe completar todos los campos de Datos de Zona " +
-                    "para generar el punto en el mapa...", Toast.LENGTH_LONG).show();
-        } else {
-            if (coordenadas == null) {
-                String direccionAConvertir = direccionTxt + ", " + localidadTxt + ", " + provinciaTxt
-                        + ", " + paisTxt;
-                coordenadas = convertirDirEnLatlang(direccionAConvertir);
-            }
-            zona = new Zona(direccionTxt, localidadTxt, provinciaTxt, paisTxt);
-            zona.setLatlang(coordenadas);
+        if (direccionFijaLL.getVisibility() == View.GONE) {
+            zona = null;
+            direcciontxv.setText("sin dirección física");
             cliente.setZona(zona);
-            if (mapViewOculto != null) {
-                mapViewOculto.onCreate(null);
-                mapViewOculto.onResume();
-                mapViewOculto.getMapAsync(this);
+        } else {
+            String direccionTxt = direccionEd.getText().toString().trim();
+            String localidadTxt = localidadED.getText().toString().trim();
+            String provinciaTxt = provinciaEd.getText().toString().trim();
+            String paisTxt = paisEd.getText().toString().trim();
+            direcciontxv.setText(direccionTxt);
+            localidadtxv.setText(localidadTxt);
+            provinciatxv.setText(provinciaTxt);
+            paistxv.setText(paisTxt);
+            if (direccionTxt.isEmpty() || localidadTxt.isEmpty() || provinciaTxt.isEmpty() || paisTxt.isEmpty()) {
+                Toast.makeText(getActivity(), "Debe completar todos los campos de Datos de Zona " +
+                        "para generar el punto en el mapa...", Toast.LENGTH_LONG).show();
+            } else {
+                if (coordenadas == null) {
+                    String direccionAConvertir = direccionTxt + ", " + localidadTxt + ", " + provinciaTxt
+                            + ", " + paisTxt;
+                    coordenadas = convertirDirEnLatlang(direccionAConvertir);
+                }
+                zona = new Zona(direccionTxt, localidadTxt, provinciaTxt, paisTxt);
+                zona.setLatlang(coordenadas);
+                cliente.setZona(zona);
+                if (mapViewOculto != null) {
+                    mapViewOculto.onCreate(null);
+                    mapViewOculto.onResume();
+                    mapViewOculto.getMapAsync(this);
+                }
+                zonaOcultaCardView.setVisibility(View.VISIBLE);
+                zonaCardView.setVisibility(View.GONE);
             }
-            zonaCardView.setVisibility(View.GONE);
-            zonaOcultaCardView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -602,8 +623,8 @@ public class DatosClienteFragment extends Fragment implements OnMapReadyCallback
         datosDeContacto.setTelefono(telefonoTxt);
         datosDeContacto.setRedes(redesTxt);
         cliente.setDatosDeContacto(datosDeContacto);
-        contactoCardView.setVisibility(View.GONE);
         contactoOcultoCardView.setVisibility(View.VISIBLE);
+        contactoCardView.setVisibility(View.GONE);
     }
 
     private List<String> cargarRedesCliente() {
